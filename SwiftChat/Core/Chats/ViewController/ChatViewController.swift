@@ -8,6 +8,8 @@
 import UIKit
 
 class ChatViewController: UIViewController {
+    
+    private let chatsViewModel = ChatsViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,10 +22,11 @@ class ChatViewController: UIViewController {
             action: #selector(openPeoplList)
         ), animated: true)
         
+        chatsViewModel.fetchContacts()
     }
     
     @objc func openPeoplList () {
-        print("Test")
+        print("ALINAN KİŞİLER : \(chatsViewModel.contacts)")
     }
 
 
