@@ -10,6 +10,11 @@
 		3B2B052A2BF238F4007F6F52 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2B05292BF238F4007F6F52 /* SettingsViewController.swift */; };
 		3B2B052C2BF2390D007F6F52 /* ChannelsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2B052B2BF2390D007F6F52 /* ChannelsViewController.swift */; };
 		3B2B052E2BF24C10007F6F52 /* SCTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2B052D2BF24C10007F6F52 /* SCTabBarController.swift */; };
+		3B49CCD62BF61F720019323D /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCD52BF61F720019323D /* ContactsViewController.swift */; };
+		3B49CCDA2BF645800019323D /* ContactsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCD92BF645800019323D /* ContactsTableViewCell.swift */; };
+		3B49CCDC2BF646C70019323D /* SCImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCDB2BF646C70019323D /* SCImageDownloader.swift */; };
+		3B49CCDE2BF662AF0019323D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCDD2BF662AF0019323D /* Extensions.swift */; };
+		3B49CCE22BF66A450019323D /* ContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCE12BF66A450019323D /* ContactsView.swift */; };
 		3B51D1DC2BF37A5100145F77 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B51D1DB2BF37A5100145F77 /* NetworkService.swift */; };
 		3B51D1DF2BF37CF700145F77 /* ContactsResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B51D1DE2BF37CF700145F77 /* ContactsResponseModel.swift */; };
 		3B51D1E12BF380E100145F77 /* ContactsRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B51D1E02BF380E100145F77 /* ContactsRequestModel.swift */; };
@@ -26,6 +31,11 @@
 		3B2B05292BF238F4007F6F52 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		3B2B052B2BF2390D007F6F52 /* ChannelsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsViewController.swift; sourceTree = "<group>"; };
 		3B2B052D2BF24C10007F6F52 /* SCTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCTabBarController.swift; sourceTree = "<group>"; };
+		3B49CCD52BF61F720019323D /* ContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
+		3B49CCD92BF645800019323D /* ContactsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsTableViewCell.swift; sourceTree = "<group>"; };
+		3B49CCDB2BF646C70019323D /* SCImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCImageDownloader.swift; sourceTree = "<group>"; };
+		3B49CCDD2BF662AF0019323D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		3B49CCE12BF66A450019323D /* ContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
 		3B51D1DB2BF37A5100145F77 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		3B51D1DE2BF37CF700145F77 /* ContactsResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsResponseModel.swift; sourceTree = "<group>"; };
 		3B51D1E02BF380E100145F77 /* ContactsRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsRequestModel.swift; sourceTree = "<group>"; };
@@ -65,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				3B51D1E42BF381C300145F77 /* Constants.swift */,
+				3B49CCDD2BF662AF0019323D /* Extensions.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -72,6 +83,7 @@
 		3B2B05252BF2389A007F6F52 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				3B49CCDB2BF646C70019323D /* SCImageDownloader.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -91,6 +103,7 @@
 			children = (
 				3B2B05282BF238D8007F6F52 /* RootController */,
 				3B51D1E62BF39A0F00145F77 /* Chats */,
+				3B49CCD22BF61EF60019323D /* Contacts */,
 				3B51D1E92BF39A4A00145F77 /* Channels */,
 				3B51D1EC2BF39A6C00145F77 /* Settings */,
 			);
@@ -103,6 +116,47 @@
 				3B2B052D2BF24C10007F6F52 /* SCTabBarController.swift */,
 			);
 			path = RootController;
+			sourceTree = "<group>";
+		};
+		3B49CCD22BF61EF60019323D /* Contacts */ = {
+			isa = PBXGroup;
+			children = (
+				3B49CCD42BF61F120019323D /* ViewController */,
+				3B49CCD82BF6455E0019323D /* Views */,
+				3B49CCD32BF61F090019323D /* ViewModel */,
+			);
+			path = Contacts;
+			sourceTree = "<group>";
+		};
+		3B49CCD32BF61F090019323D /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		3B49CCD42BF61F120019323D /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				3B49CCD52BF61F720019323D /* ContactsViewController.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		3B49CCD72BF645280019323D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3B49CCD82BF6455E0019323D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3B49CCE12BF66A450019323D /* ContactsView.swift */,
+				3B49CCD92BF645800019323D /* ContactsTableViewCell.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		3B51D1DA2BF37A3300145F77 /* Services */ = {
@@ -126,8 +180,9 @@
 		3B51D1E62BF39A0F00145F77 /* Chats */ = {
 			isa = PBXGroup;
 			children = (
-				3B51D1E82BF39A2F00145F77 /* ViewModel */,
 				3B51D1E72BF39A1800145F77 /* ViewController */,
+				3B49CCD72BF645280019323D /* Views */,
+				3B51D1E82BF39A2F00145F77 /* ViewModel */,
 			);
 			path = Chats;
 			sourceTree = "<group>";
@@ -293,7 +348,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B49CCDA2BF645800019323D /* ContactsTableViewCell.swift in Sources */,
 				3B2B052C2BF2390D007F6F52 /* ChannelsViewController.swift in Sources */,
+				3B49CCD62BF61F720019323D /* ContactsViewController.swift in Sources */,
 				3B51D1E52BF381C300145F77 /* Constants.swift in Sources */,
 				3B51D1E12BF380E100145F77 /* ContactsRequestModel.swift in Sources */,
 				3B9A785C2BEE57CD00943945 /* ChatViewController.swift in Sources */,
@@ -302,7 +359,10 @@
 				3B51D1F02BF39AB700145F77 /* ChatsViewModel.swift in Sources */,
 				3B2B052E2BF24C10007F6F52 /* SCTabBarController.swift in Sources */,
 				3B9A785A2BEE57CD00943945 /* SceneDelegate.swift in Sources */,
+				3B49CCDE2BF662AF0019323D /* Extensions.swift in Sources */,
+				3B49CCDC2BF646C70019323D /* SCImageDownloader.swift in Sources */,
 				3B51D1DF2BF37CF700145F77 /* ContactsResponseModel.swift in Sources */,
+				3B49CCE22BF66A450019323D /* ContactsView.swift in Sources */,
 				3B2B052A2BF238F4007F6F52 /* SettingsViewController.swift in Sources */,
 				3B51D1DC2BF37A5100145F77 /* NetworkService.swift in Sources */,
 			);

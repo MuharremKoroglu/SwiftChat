@@ -26,7 +26,11 @@ class ChatViewController: UIViewController {
     }
     
     @objc func openPeoplList () {
-        print("ALINAN KİŞİLER : \(chatsViewModel.contacts)")
+        let contactsPage = ContactsViewController()
+        contactsPage.title = "Contacts"
+        contactsPage.navigationItem.largeTitleDisplayMode = .inline
+        let contactsPageNavigationController = UINavigationController(rootViewController: contactsPage)
+        self.present(contactsPageNavigationController, animated: true)
     }
 
 

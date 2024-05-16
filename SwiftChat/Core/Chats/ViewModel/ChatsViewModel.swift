@@ -26,8 +26,8 @@ class ChatsViewModel {
             switch response {
             case .success(let fetchedContacts):
                 self.contacts = fetchedContacts.results
-            case .failure(let failure):
-                print("VERİ ALIMINDA HATA : \(failure)")
+            case .failure(let error):
+                print("VERİ ALIMINDA HATA : \(error)")
             }
 
         }
