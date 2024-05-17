@@ -26,7 +26,7 @@ class ContactsTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
         label.font = .systemFont(ofSize: 15)
-        label.backgroundColor = .label
+        label.textColor = .label
         return label
     }()
     
@@ -35,7 +35,7 @@ class ContactsTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
         label.font = .systemFont(ofSize: 10)
-        label.backgroundColor = .label
+        label.textColor = .label
         return label
     }()
     

@@ -9,11 +9,9 @@ import UIKit
 
 class ChatViewController: UIViewController {
     
-    private let chatsViewModel = ChatsViewModel()
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         
         navigationController?.navigationBar.topItem?.setRightBarButton(UIBarButtonItem(
             image: UIImage(systemName: "plus.circle.fill"),
@@ -22,7 +20,6 @@ class ChatViewController: UIViewController {
             action: #selector(openPeoplList)
         ), animated: true)
         
-        chatsViewModel.fetchContacts()
     }
     
     @objc func openPeoplList () {

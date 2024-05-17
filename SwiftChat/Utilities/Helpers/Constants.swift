@@ -11,5 +11,4 @@ struct Constants {
     
     static let contactsBaseUrl = "https://randomuser.me/api/"
     
-    
 }

@@ -9,13 +9,12 @@ import UIKit
 
 class ContactsViewController: UIViewController {
     
-    private let contactsView = ContactsView(frame: .zero, viewModel: ChatsViewModel())
+    private let contactsView = ContactsView(frame: .zero, viewModel: ContactsViewModel())
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         setUpConstraints()
-        print("ALINAN KİŞİLER : \(ChatsViewModel().contacts)")
     }
     
     private func setUpConstraints() {
