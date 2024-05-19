@@ -30,8 +30,11 @@ class ContactsViewModel {
             
             switch response {
             case .success(let fetchedContacts):
+                let sortedContacts = fetchedContacts.results.sorted{
+                    $0.name.first < $1.name.first
+                }
                 self.isFetching.onNext(false)
-                self.contacts.onNext(fetchedContacts.results)
+                self.contacts.onNext(sortedContacts)
             case .failure(let error):
                 self.isFetching.onNext(false)
                 print(error)

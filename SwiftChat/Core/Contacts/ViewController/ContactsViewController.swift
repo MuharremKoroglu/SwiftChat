@@ -15,6 +15,18 @@ class ContactsViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setUpConstraints()
+        
+        navigationController?.navigationBar.topItem?.setRightBarButton(UIBarButtonItem(
+            image: UIImage(systemName: "xmark.circle.fill"),
+            style: .plain,
+            target: self,
+            action: #selector(closeContactsPage)
+        ), animated: true)
+        
+    }
+    
+    @objc func closeContactsPage() {
+        navigationController?.dismiss(animated: true)
     }
     
     private func setUpConstraints() {

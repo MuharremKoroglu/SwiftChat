@@ -16,8 +16,6 @@ class ContactsTableViewCell: UITableViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = imageView.frame.size.width / 2
         return imageView
     }()
     
@@ -25,7 +23,7 @@ class ContactsTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 15)
+        label.font = .systemFont(ofSize: 15, weight: .bold)
         label.textColor = .label
         return label
     }()
@@ -34,7 +32,7 @@ class ContactsTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 10)
+        label.font = .systemFont(ofSize: 12)
         label.textColor = .label
         return label
     }()
@@ -54,8 +52,11 @@ class ContactsTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contactProfileImage.layer.cornerRadius = contactProfileImage.frame.size.width / 2
     }
     
     func configureCell (contact : ContactInfo) {
@@ -84,20 +85,18 @@ class ContactsTableViewCell: UITableViewCell {
             contactPhoneNumber)
         
         NSLayoutConstraint.activate([
-            
             contactProfileImage.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             contactProfileImage.centerYAnchor.constraint(equalTo: centerYAnchor),
             contactProfileImage.heightAnchor.constraint(equalToConstant: 50),
             contactProfileImage.widthAnchor.constraint(equalToConstant: 50),
             
-            contactName.topAnchor.constraint(equalTo: topAnchor, constant: 10),
             contactName.leadingAnchor.constraint(equalTo: contactProfileImage.trailingAnchor, constant: 10),
             contactName.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            contactName.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -10),
 
-            contactPhoneNumber.topAnchor.constraint(equalTo: contactName.bottomAnchor, constant: 10),
+            contactPhoneNumber.topAnchor.constraint(equalTo: contactName.bottomAnchor, constant: 5),
             contactPhoneNumber.leadingAnchor.constraint(equalTo: contactProfileImage.trailingAnchor, constant: 10),
             contactPhoneNumber.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
-            
         ])
         
     }
