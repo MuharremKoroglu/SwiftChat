@@ -29,6 +29,7 @@ class ContactsView: UIView {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(ContactsTableViewCell.self, forCellReuseIdentifier: ContactsTableViewCell.cellIdentifier)
         tableView.showsVerticalScrollIndicator = false
+        tableView.rowHeight = 70
         return tableView
     }()
     
@@ -37,16 +38,11 @@ class ContactsView: UIView {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
         setUpConstraints()
-        setUpTableView()
         setUpBindings()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setUpTableView() {
-        contactsTableView.rx.setDelegate(self).disposed(by: bag)
     }
     
     private func setUpBindings() {
@@ -57,7 +53,7 @@ class ContactsView: UIView {
             .disposed(by: bag)
         
         viewModel
-            .contacts
+            .filteredContacts
             .bind(to: self.contactsTableView.rx.items(
                 cellIdentifier: ContactsTableViewCell.cellIdentifier,
                 cellType: ContactsTableViewCell.self)
@@ -91,14 +87,6 @@ class ContactsView: UIView {
             contactsTableView.bottomAnchor.constraint(equalTo: bottomAnchor)
             
         ])
-    }
-    
-}
-
-extension ContactsView : UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 70
     }
     
 }

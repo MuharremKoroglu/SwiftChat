@@ -6,16 +6,29 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class ContactsViewController: UIViewController {
     
+    private let searchController = UISearchController()
     private let contactsView = ContactsView(frame: .zero, viewModel: ContactsViewModel())
+    
+    private let bag = DisposeBag()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setUpConstraints()
-        
+        setUpNavigationComponents()
+        setUpBindings()
+    }
+    
+    @objc func closeContactsPage() {
+        navigationController?.dismiss(animated: true)
+    }
+    
+    private func setUpNavigationComponents() {
         navigationController?.navigationBar.topItem?.setRightBarButton(UIBarButtonItem(
             image: UIImage(systemName: "xmark.circle.fill"),
             style: .plain,
@@ -23,10 +36,19 @@ class ContactsViewController: UIViewController {
             action: #selector(closeContactsPage)
         ), animated: true)
         
+        navigationItem.searchController = searchController
     }
     
-    @objc func closeContactsPage() {
-        navigationController?.dismiss(animated: true)
+    private func setUpBindings() {
+        
+        searchController.searchBar.rx.text
+            .orEmpty
+            .distinctUntilChanged()
+            .subscribe { [weak self] searchtext in
+                self?.contactsView.viewModel.filterContacts(searchText: searchtext)
+            }.disposed(by: bag)
+        
+        
     }
     
     private func setUpConstraints() {

@@ -12,10 +12,11 @@ import RxCocoa
 @MainActor
 class ContactsViewModel {
     
-    var contacts = PublishSubject<[ContactInfo]>()
+    var filteredContacts = PublishSubject<[ContactInfo]>()
     var isFetching = PublishSubject<Bool>()
     
     private let service = NetworkService()
+    private var contacts : [ContactInfo] = []
     
     func fetchContacts () {
         
@@ -34,7 +35,8 @@ class ContactsViewModel {
                     $0.name.first < $1.name.first
                 }
                 self.isFetching.onNext(false)
-                self.contacts.onNext(sortedContacts)
+                contacts = sortedContacts
+                self.filteredContacts.onNext(contacts)
             case .failure(let error):
                 self.isFetching.onNext(false)
                 print(error)
@@ -43,5 +45,21 @@ class ContactsViewModel {
         }
         
     }
+    
+}
+
+extension ContactsViewModel {
+    
+    func filterContacts(searchText : String) {
+        if searchText.isEmpty {
+            filteredContacts.onNext(contacts)
+        }else {
+            let filteredList = contacts.filter({
+                $0.name.first.lowercased().contains(searchText.lowercased()) || $0.name.last.lowercased().contains(searchText.lowercased()) || $0.phone.lowercased().contains(searchText.lowercased())}
+            )
+            filteredContacts.onNext(filteredList)
+        }
+    }
+    
     
 }
