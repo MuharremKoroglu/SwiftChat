@@ -24,6 +24,7 @@
 		3B51D1E32BF3815B00145F77 /* RequestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B51D1E22BF3815B00145F77 /* RequestService.swift */; };
 		3B51D1E52BF381C300145F77 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B51D1E42BF381C300145F77 /* Constants.swift */; };
 		3B51D1F02BF39AB700145F77 /* ChatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B51D1EF2BF39AB700145F77 /* ChatsViewModel.swift */; };
+		3B6A52082BFCA52D0082B2BE /* ContactSectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A52072BFCA52D0082B2BE /* ContactSectionModel.swift */; };
 		3B9A78582BEE57CD00943945 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A78572BEE57CD00943945 /* AppDelegate.swift */; };
 		3B9A785A2BEE57CD00943945 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A78592BEE57CD00943945 /* SceneDelegate.swift */; };
 		3B9A785C2BEE57CD00943945 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A785B2BEE57CD00943945 /* ChatViewController.swift */; };
@@ -46,6 +47,7 @@
 		3B51D1E22BF3815B00145F77 /* RequestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestService.swift; sourceTree = "<group>"; };
 		3B51D1E42BF381C300145F77 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3B51D1EF2BF39AB700145F77 /* ChatsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsViewModel.swift; sourceTree = "<group>"; };
+		3B6A52072BFCA52D0082B2BE /* ContactSectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactSectionModel.swift; sourceTree = "<group>"; };
 		3B9A78542BEE57CD00943945 /* SwiftChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B9A78572BEE57CD00943945 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3B9A78592BEE57CD00943945 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 			children = (
 				3B51D1DE2BF37CF700145F77 /* ContactsResponseModel.swift */,
 				3B51D1E02BF380E100145F77 /* ContactsRequestModel.swift */,
+				3B6A52072BFCA52D0082B2BE /* ContactSectionModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -370,6 +373,7 @@
 				3B9A785C2BEE57CD00943945 /* ChatViewController.swift in Sources */,
 				3B51D1E32BF3815B00145F77 /* RequestService.swift in Sources */,
 				3B2FB3A32BF791AE0099EA65 /* ContactsViewModel.swift in Sources */,
+				3B6A52082BFCA52D0082B2BE /* ContactSectionModel.swift in Sources */,
 				3B9A78582BEE57CD00943945 /* AppDelegate.swift in Sources */,
 				3B51D1F02BF39AB700145F77 /* ChatsViewModel.swift in Sources */,
 				3B2B052E2BF24C10007F6F52 /* SCTabBarRootController.swift in Sources */,
