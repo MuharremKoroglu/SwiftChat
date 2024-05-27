@@ -17,15 +17,16 @@ class ChatViewController: UIViewController {
             image: UIImage(systemName: "plus.circle.fill"),
             style: .plain,
             target: self,
-            action: #selector(openPeoplList)
+            action: #selector(openPeopleList)
         ), animated: true)
         
     }
     
-    @objc func openPeoplList () {
+    @objc func openPeopleList () {
         let contactsPage = ContactsViewController()
         contactsPage.title = "Contacts"
-        contactsPage.navigationItem.largeTitleDisplayMode = .inline
+        contactsPage.navigationItem.largeTitleDisplayMode = .automatic
+        contactsPage.navigationController?.navigationBar.prefersLargeTitles = false
         let contactsPageNavigationController = UINavigationController(rootViewController: contactsPage)
         self.present(contactsPageNavigationController, animated: true)
     }
