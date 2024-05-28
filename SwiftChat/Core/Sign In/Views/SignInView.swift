@@ -6,73 +6,82 @@
 //
 
 import UIKit
-import Lottie
 
 class SignInView: UIView {
-
-    private let lottieAnimation : LottieAnimationView = {
-        let animation = LottieAnimationView()
-        animation.translatesAutoresizingMaskIntoConstraints = false
-        animation.animation = LottieAnimation.named("chat")
-        animation.contentMode = .scaleAspectFit
-        animation.loopMode = .loop
-        return animation
-    }()
     
-    private let welcomeLabel : UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Welcome to"
-        label.font = .systemFont(ofSize: 20, weight: .light)
-        label.textColor = .label
-        return label
-    }()
+    private let lottieAnimation = CustomLottieAnimation(animationName: "chat")
     
-    private let appNameLabel : UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "SwiftChat"
-        label.font = .systemFont(ofSize: 30, weight: .bold)
-        label.textColor = .label
-        return label
-    }()
+    private let welcomeLabel = CustomUILabel(
+        labelText: "Welcome to",
+        labelFont: .systemFont(ofSize: 20, weight: .light)
+    )
+    
+    private let appNameLabel = CustomUILabel(
+        labelText: "SwiftChat",
+        labelFont: .systemFont(ofSize: 30, weight: .bold)
+    )
     
     private let emailTextField = CustomUITextField(placeHolderText: "Email")
     
     private let passwordTextField = CustomUITextField(placeHolderText: "Password")
     
-    private let signInButton = CustomUIButton(buttonName: "Sign In") {
-        print("TEST")
+    private let resetPasswordButton = CustomUIButton(
+        buttonTitle: "Forgot Password?",
+        buttonTitleColor : .systemOrange,
+        buttonTitleFont: .systemFont(ofSize: 12, weight: .bold)
+    ) {
+        print("Test")
     }
     
-    private let orLabel : UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Or"
-        label.font = .systemFont(ofSize: 15, weight: .light)
-        label.textColor = .label
-        return label
+    
+    private let signInButton = CustomUIButton(
+        buttonTitle: "Sign In",
+        buttonColor: .systemOrange
+    ) {
+        print("Test")
+    }
+    
+    private let orLabel = CustomUILabel(
+        labelText: "Or",
+        labelFont: .systemFont(ofSize: 15, weight: .light)
+    )
+    
+    private let leftLine = CustomDivider()
+    
+    private let rightLine = CustomDivider()
+    
+    private let googleSignInButton = CustomUIButton(
+        buttonImage: UIImage(resource: .googleSign)
+    ) {
+        print("Google ile giriş yapıldı!")
+    }
+    
+    private let stackView : UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.spacing = 5
+        return stack
     }()
     
-    private let leftLine: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemGray.withAlphaComponent(0.7)
-        return view
-    }()
+    private let questionLabel = CustomUILabel(
+        labelText: "Don't you have an account?",
+        labelFont: .systemFont(ofSize: 15, weight: .light)
+    )
     
-    private let rightLine: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemGray.withAlphaComponent(0.7)
-        return view
-    }()
+    public var signUpButton = CustomUIButton(
+        buttonTitle: "Sign Up",
+        buttonTitleColor: .systemOrange
+    ) {
+        print("Sign Up page opened!")
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
+        setUpViews()
         setUpConstraints()
-        lottieAnimation.play()
         
     }
     
@@ -80,7 +89,11 @@ class SignInView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setUpConstraints() {
+}
+
+private extension SignInView {
+    
+    func setUpViews() {
         
         addSubViews(
             lottieAnimation,
@@ -88,14 +101,24 @@ class SignInView: UIView {
             appNameLabel,
             emailTextField,
             passwordTextField,
+            resetPasswordButton,
             signInButton,
             orLabel,
             leftLine,
-            rightLine
+            rightLine,
+            googleSignInButton,
+            stackView
         )
         
-        NSLayoutConstraint.activate([
+        stackView.addArrangedSubview(questionLabel)
+        stackView.addArrangedSubview(signUpButton)
         
+    }
+    
+    func setUpConstraints() {
+        
+        NSLayoutConstraint.activate([
+            
             lottieAnimation.centerXAnchor.constraint(equalTo: centerXAnchor),
             lottieAnimation.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8),
             lottieAnimation.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.4),
@@ -116,8 +139,12 @@ class SignInView: UIView {
             passwordTextField.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8),
             passwordTextField.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.06),
             
+            resetPasswordButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor),
+            resetPasswordButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40),
+            
+            
             signInButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            signInButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 15),
+            signInButton.topAnchor.constraint(equalTo: resetPasswordButton.bottomAnchor, constant: 15),
             signInButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.4),
             signInButton.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.06),
             
@@ -133,14 +160,17 @@ class SignInView: UIView {
             rightLine.leadingAnchor.constraint(equalTo: orLabel.trailingAnchor, constant: 10),
             rightLine.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -100),
             rightLine.heightAnchor.constraint(equalToConstant: 1),
-
             
-        
+            googleSignInButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            googleSignInButton.topAnchor.constraint(equalTo: orLabel.bottomAnchor, constant: 25),
+            googleSignInButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.1),
+            googleSignInButton.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 0.1),
             
+            stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            stackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
             
         ])
         
     }
     
-
 }
