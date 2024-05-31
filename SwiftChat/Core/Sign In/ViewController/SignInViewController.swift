@@ -6,23 +6,33 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class SignInViewController: UIViewController {
 
-    private let signInView = SignInView(frame: .zero)
+    private let signInView = SignInView(frame: .zero,viewModel: SignInViewModel())
+    private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        navigationItem.backButtonTitle = ""
         setUpConstarints()
+        bindViewModel()
     }
-    
-
-    
-
 }
 
 private extension SignInViewController {
+    
+    func bindViewModel() {
+    
+        signInView.signUpButton.rx.tap.bind {
+            let vc = SignUpViewController()
+            
+            self.navigationController?.pushViewController(vc, animated: true)
+        }.disposed(by: disposeBag)
+    }
     
     func setUpConstarints() {
         

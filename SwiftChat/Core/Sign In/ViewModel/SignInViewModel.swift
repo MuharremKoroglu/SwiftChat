@@ -6,3 +6,15 @@
 //
 
 import Foundation
+
+class SignInViewModel {
+    
+    
+    func test() {
+        print("viewModel çalıştı")
+    }
+    
+    
+    
+    
+}

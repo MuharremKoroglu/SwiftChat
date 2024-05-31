@@ -15,9 +15,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        let vc = SignInViewController()
+        let signInVC = SignInViewController()
+        let navigationController = UINavigationController(rootViewController: signInVC)
+        
         let window = UIWindow(windowScene: windowScene)
-        window.rootViewController = vc
+        window.tintColor = .systemOrange
+        window.rootViewController = navigationController
         window.makeKeyAndVisible()
         self.window = window
         

@@ -24,6 +24,8 @@
 		3B51D1E32BF3815B00145F77 /* RequestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B51D1E22BF3815B00145F77 /* RequestService.swift */; };
 		3B51D1E52BF381C300145F77 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B51D1E42BF381C300145F77 /* Constants.swift */; };
 		3B51D1F02BF39AB700145F77 /* ChatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B51D1EF2BF39AB700145F77 /* ChatsViewModel.swift */; };
+		3B54F8E62C0A640200FD1827 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B54F8E52C0A640200FD1827 /* SignUpView.swift */; };
+		3B54F8E82C0A6D4900FD1827 /* signUp.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B54F8E72C0A6D4900FD1827 /* signUp.json */; };
 		3B584FD72C04A69C009BF4D9 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B584FD62C04A69C009BF4D9 /* SignInViewController.swift */; };
 		3B584FDA2C04AA5D009BF4D9 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 3B584FD92C04AA5D009BF4D9 /* Lottie */; };
 		3B584FDC2C04AABD009BF4D9 /* chat.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B584FDB2C04AABD009BF4D9 /* chat.json */; };
@@ -59,6 +61,8 @@
 		3B51D1E22BF3815B00145F77 /* RequestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestService.swift; sourceTree = "<group>"; };
 		3B51D1E42BF381C300145F77 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3B51D1EF2BF39AB700145F77 /* ChatsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsViewModel.swift; sourceTree = "<group>"; };
+		3B54F8E52C0A640200FD1827 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		3B54F8E72C0A6D4900FD1827 /* signUp.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = signUp.json; sourceTree = "<group>"; };
 		3B584FD62C04A69C009BF4D9 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		3B584FDB2C04AABD009BF4D9 /* chat.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chat.json; sourceTree = "<group>"; };
 		3B584FDD2C04AB08009BF4D9 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
@@ -125,6 +129,7 @@
 			children = (
 				3B9A78572BEE57CD00943945 /* AppDelegate.swift */,
 				3B9A78592BEE57CD00943945 /* SceneDelegate.swift */,
+				3B54F8E72C0A6D4900FD1827 /* signUp.json */,
 				3B584FDB2C04AABD009BF4D9 /* chat.json */,
 				3B9A78602BEE57CE00943945 /* Assets.xcassets */,
 			);
@@ -357,6 +362,7 @@
 		3B98311A2C0614C400434027 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				3B54F8E52C0A640200FD1827 /* SignUpView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -464,6 +470,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B9A78612BEE57CE00943945 /* Assets.xcassets in Resources */,
+				3B54F8E82C0A6D4900FD1827 /* signUp.json in Resources */,
 				3B584FDC2C04AABD009BF4D9 /* chat.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -491,6 +498,7 @@
 				3B6A52082BFCA52D0082B2BE /* ContactSectionModel.swift in Sources */,
 				3B9A78582BEE57CD00943945 /* AppDelegate.swift in Sources */,
 				3B51D1F02BF39AB700145F77 /* ChatsViewModel.swift in Sources */,
+				3B54F8E62C0A640200FD1827 /* SignUpView.swift in Sources */,
 				3B98311D2C06151900434027 /* SignUpViewController.swift in Sources */,
 				3B2B052E2BF24C10007F6F52 /* SCTabBarRootController.swift in Sources */,
 				3B9A785A2BEE57CD00943945 /* SceneDelegate.swift in Sources */,

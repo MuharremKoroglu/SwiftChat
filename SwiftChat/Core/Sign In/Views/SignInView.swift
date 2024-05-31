@@ -9,75 +9,149 @@ import UIKit
 
 class SignInView: UIView {
     
-    private let lottieAnimation = CustomLottieAnimation(animationName: "chat")
+    let viewModel : SignInViewModel
+        
+    private let lottieAnimation : CustomLottieAnimation = {
+        let animation = CustomLottieAnimation(
+            animationName: "chat"
+        )
+        return animation
+    }()
+        
+    private let welcomeLabel : CustomUILabel = {
+        let label = CustomUILabel(
+            labelText: "Welcome to",
+            labelFont: .systemFont(ofSize: 20, weight: .light)
+        )
+        return label
+    }()
     
-    private let welcomeLabel = CustomUILabel(
-        labelText: "Welcome to",
-        labelFont: .systemFont(ofSize: 20, weight: .light)
-    )
+    private let appNameLabel : CustomUILabel = {
+        let label = CustomUILabel(
+            labelText: "SwiftChat",
+            labelFont: .systemFont(ofSize: 30, weight: .bold)
+        )
+        return label
+    }()
     
-    private let appNameLabel = CustomUILabel(
-        labelText: "SwiftChat",
-        labelFont: .systemFont(ofSize: 30, weight: .bold)
-    )
-    
-    private let emailTextField = CustomUITextField(placeHolderText: "Email")
-    
-    private let passwordTextField = CustomUITextField(placeHolderText: "Password")
-    
-    private let resetPasswordButton = CustomUIButton(
-        buttonTitle: "Forgot Password?",
-        buttonTitleColor : .systemOrange,
-        buttonTitleFont: .systemFont(ofSize: 12, weight: .bold)
-    ) {
-        print("Test")
-    }
-    
-    
-    private let signInButton = CustomUIButton(
-        buttonTitle: "Sign In",
-        buttonColor: .systemOrange
-    ) {
-        print("Test")
-    }
-    
-    private let orLabel = CustomUILabel(
-        labelText: "Or",
-        labelFont: .systemFont(ofSize: 15, weight: .light)
-    )
-    
-    private let leftLine = CustomDivider()
-    
-    private let rightLine = CustomDivider()
-    
-    private let googleSignInButton = CustomUIButton(
-        buttonImage: UIImage(resource: .googleSign)
-    ) {
-        print("Google ile giriş yapıldı!")
-    }
-    
-    private let stackView : UIStackView = {
-        let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.axis = .horizontal
-        stack.alignment = .center
-        stack.spacing = 5
+    private let welcomeStackView : CustomUIStackView = {
+        let stack = CustomUIStackView(
+            stackAxis: .vertical,
+            componentAlignment: .center,
+            componentSpacing: 5)
         return stack
     }()
     
-    private let questionLabel = CustomUILabel(
-        labelText: "Don't you have an account?",
-        labelFont: .systemFont(ofSize: 15, weight: .light)
-    )
+    private let emailTextField : CustomUITextField = {
+        let textField = CustomUITextField(
+            placeHolderText: "Email"
+        )
+        return textField
+    }()
     
-    public var signUpButton = CustomUIButton(
-        buttonTitle: "Sign Up",
-        buttonTitleColor: .systemOrange
-    ) {
-        print("Sign Up page opened!")
-    }
+    private let passwordTextField : CustomUITextField = {
+        let textField = CustomUITextField(
+            placeHolderText: "Password"
+        )
+        return textField
+    }()
     
-    override init(frame: CGRect) {
+    private let emailPasswordStackView : CustomUIStackView = {
+        let stack = CustomUIStackView(
+            stackAxis: .vertical,
+            componentAlignment: .center,
+            componentSpacing: 10
+        )
+        return stack
+    }()
+    
+    private let resetPasswordButton : CustomUIButton = {
+        let button = CustomUIButton(
+            buttonTitle: "Forgot Password?",
+            buttonTitleColor: .systemOrange,
+            buttonTitleFont: .systemFont(ofSize: 12, weight: .bold)
+        )
+        return button
+    }()
+    
+    private let signInButton : CustomUIButton = {
+        let button = CustomUIButton(
+            buttonTitle: "Sign In",
+            buttonColor: .systemOrange
+        )
+        return button
+    }()
+    
+    private let orLabel : CustomUILabel = {
+        let label = CustomUILabel(
+            labelText: "Or",
+            labelFont: .systemFont(ofSize: 15, weight: .light)
+        )
+        return label
+    }()
+        
+    private let leftLine : CustomDivider = {
+        let divider = CustomDivider()
+        return divider
+    }()
+    
+    private let rightLine : CustomDivider = {
+        let divider = CustomDivider()
+        return divider
+    }()
+    
+    private let orStackView : CustomUIStackView = {
+        let stack = CustomUIStackView(
+            stackAxis: .horizontal,
+            componentAlignment: .center,
+            componentSpacing: 10
+        )
+        return stack
+    }()
+    
+    private let googleSignInButton : CustomUIButton = {
+        let button = CustomUIButton(
+            buttonImage: UIImage(resource: .googleSign)
+        )
+        return button
+    }()
+    
+    private var signInStackView : CustomUIStackView = {
+        let stack = CustomUIStackView(
+            stackAxis: .vertical,
+            componentAlignment: .center,
+            componentSpacing: 20
+        )
+        return stack
+    }()
+        
+    private var signUpStackView : CustomUIStackView = {
+        let stack = CustomUIStackView(
+            stackAxis: .horizontal,
+            componentAlignment: .center,
+            componentSpacing: 5
+        )
+        return stack
+    }()
+    
+    private let questionLabel : CustomUILabel = {
+        let label = CustomUILabel(
+            labelText: "Don't you have an account?",
+            labelFont: .systemFont(ofSize: 15, weight: .light)
+        )
+        return label
+    }()
+    
+    public var signUpButton : CustomUIButton = {
+        let button = CustomUIButton(
+            buttonTitle: "Sign Up",
+            buttonTitleColor: .systemOrange
+        )
+        return button
+    }()
+    
+    init(frame: CGRect, viewModel : SignInViewModel) {
+        self.viewModel = viewModel
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
         setUpViews()
@@ -97,21 +171,30 @@ private extension SignInView {
         
         addSubViews(
             lottieAnimation,
-            welcomeLabel,
-            appNameLabel,
-            emailTextField,
-            passwordTextField,
+            welcomeStackView,
+            emailPasswordStackView,
             resetPasswordButton,
-            signInButton,
-            orLabel,
-            leftLine,
-            rightLine,
-            googleSignInButton,
-            stackView
+            orStackView,
+            signInStackView,
+            signUpStackView
         )
         
-        stackView.addArrangedSubview(questionLabel)
-        stackView.addArrangedSubview(signUpButton)
+        welcomeStackView.addArrangedSubview(welcomeLabel)
+        welcomeStackView.addArrangedSubview(appNameLabel)
+        
+        emailPasswordStackView.addArrangedSubview(emailTextField)
+        emailPasswordStackView.addArrangedSubview(passwordTextField)
+        
+        orStackView.addArrangedSubview(leftLine)
+        orStackView.addArrangedSubview(orLabel)
+        orStackView.addArrangedSubview(rightLine)
+        
+        signInStackView.addArrangedSubview(signInButton)
+        signInStackView.addArrangedSubview(orStackView)
+        signInStackView.addArrangedSubview(googleSignInButton)
+        
+        signUpStackView.addArrangedSubview(questionLabel)
+        signUpStackView.addArrangedSubview(signUpButton)
         
     }
     
@@ -123,51 +206,33 @@ private extension SignInView {
             lottieAnimation.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8),
             lottieAnimation.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.4),
             
-            welcomeLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            welcomeLabel.topAnchor.constraint(equalTo: lottieAnimation.bottomAnchor),
+            welcomeStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            welcomeStackView.topAnchor.constraint(equalTo: lottieAnimation.bottomAnchor),
             
-            appNameLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            appNameLabel.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 15),
-            
-            emailTextField.centerXAnchor.constraint(equalTo: centerXAnchor),
-            emailTextField.topAnchor.constraint(equalTo: appNameLabel.bottomAnchor, constant: 25),
+            emailPasswordStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            emailPasswordStackView.topAnchor.constraint(equalTo: welcomeStackView.bottomAnchor, constant: 25),
             emailTextField.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8),
             emailTextField.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.06),
-            
-            passwordTextField.centerXAnchor.constraint(equalTo: centerXAnchor),
-            passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 10),
             passwordTextField.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8),
             passwordTextField.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.06),
             
             resetPasswordButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor),
             resetPasswordButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40),
             
-            
-            signInButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            signInButton.topAnchor.constraint(equalTo: resetPasswordButton.bottomAnchor, constant: 15),
+            signInStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            signInStackView.topAnchor.constraint(equalTo: resetPasswordButton.bottomAnchor, constant: 20),
+            leftLine.heightAnchor.constraint(equalToConstant: 1),
+            leftLine.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.2),
+            rightLine.heightAnchor.constraint(equalToConstant: 1),
+            rightLine.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.2),
             signInButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.4),
             signInButton.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.06),
-            
-            orLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            orLabel.topAnchor.constraint(equalTo: signInButton.bottomAnchor, constant: 25),
-            
-            leftLine.centerYAnchor.constraint(equalTo: orLabel.centerYAnchor),
-            leftLine.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 100),
-            leftLine.trailingAnchor.constraint(equalTo: orLabel.leadingAnchor, constant: -10),
-            leftLine.heightAnchor.constraint(equalToConstant: 1),
-            
-            rightLine.centerYAnchor.constraint(equalTo: orLabel.centerYAnchor),
-            rightLine.leadingAnchor.constraint(equalTo: orLabel.trailingAnchor, constant: 10),
-            rightLine.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -100),
-            rightLine.heightAnchor.constraint(equalToConstant: 1),
-            
-            googleSignInButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            googleSignInButton.topAnchor.constraint(equalTo: orLabel.bottomAnchor, constant: 25),
             googleSignInButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.1),
             googleSignInButton.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 0.1),
             
-            stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            stackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+            
+            signUpStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            signUpStackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
             
         ])
         

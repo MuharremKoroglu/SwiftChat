@@ -15,15 +15,17 @@ class CustomUIButton : UIButton {
     let buttonColor : UIColor?
     let buttonTitleColor : UIColor?
     let buttonTitleFont : UIFont?
-    let buttonAction : (()->Void)?
     
-    init(buttonTitle : String? = nil, buttonImage : UIImage? = nil, buttonColor : UIColor? = nil, buttonTitleColor : UIColor? = nil, buttonTitleFont : UIFont? = nil, buttonAction : (()->Void)?) {
+    init(buttonTitle : String? = nil,
+         buttonImage : UIImage? = nil,
+         buttonColor : UIColor? = nil,
+         buttonTitleColor : UIColor? = nil,
+         buttonTitleFont : UIFont? = nil) {
         self.buttonTitle = buttonTitle
         self.buttonImage = buttonImage
         self.buttonColor = buttonColor
         self.buttonTitleColor = buttonTitleColor
         self.buttonTitleFont = buttonTitleFont
-        self.buttonAction = buttonAction
         super.init(frame: .zero)
         setUpButton()
     }
@@ -43,12 +45,6 @@ class CustomUIButton : UIButton {
         setImage(self.buttonImage, for: .normal)
         setTitle(self.buttonTitle, for: .normal)
         setTitleColor(self.buttonTitleColor, for: .normal)
-        
-        let action = UIAction { _ in
-            self.buttonAction?()
-        }
-        
-        addAction(action, for: .touchUpInside)
         
     }
 
