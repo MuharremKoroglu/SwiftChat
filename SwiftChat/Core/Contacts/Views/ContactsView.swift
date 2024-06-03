@@ -16,12 +16,10 @@ class ContactsView: UIView {
     var contactSections: [ContactSection] = []
     
     private let bag = DisposeBag()
-    
-    private let spinner: UIActivityIndicatorView = {
-        let spinner = UIActivityIndicatorView(style: .large)
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-        spinner.hidesWhenStopped = true
-        return spinner
+        
+    private let spinner : CustomUIActivityIndicator = {
+        let indicator = CustomUIActivityIndicator()
+        return indicator
     }()
     
     private let contactsTableView: UITableView = {

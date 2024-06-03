@@ -11,11 +11,13 @@ import UIKit
 final class CustomUITextField : UITextField {
     
     let placeHolder : String
+    let isSecure : Bool
     
     private let padding = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
     
-    init(placeHolderText : String) {
+    init(placeHolderText : String,isSecure : Bool = false) {
         self.placeHolder = placeHolderText
+        self.isSecure = isSecure
         super.init(frame: .zero)
         setUpTextField()
     }
@@ -31,6 +33,8 @@ final class CustomUITextField : UITextField {
         clipsToBounds = true
         layer.cornerRadius = 20
         clearButtonMode = .whileEditing
+        isSecureTextEntry = self.isSecure
+        autocorrectionType = .no
         attributedPlaceholder = NSAttributedString(string: self.placeHolder)
         
     }

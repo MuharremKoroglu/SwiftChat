@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class CustomDivider : UIView {
+final class CustomDivider : UIView {
     
     let dividerColor : UIColor?
     

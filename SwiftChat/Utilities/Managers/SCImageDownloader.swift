@@ -7,7 +7,7 @@
 
 import Foundation
 
-class SCImageDownloader {
+final class SCImageDownloader {
     
     static let shared : SCImageDownloader = SCImageDownloader()
     

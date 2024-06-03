@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class CustomUIButton : UIButton {
+final class CustomUIButton : UIButton {
     
     let buttonTitle : String?
     let buttonImage : UIImage?

@@ -6,10 +6,19 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class SignInView: UIView {
     
     let viewModel : SignInViewModel
+    
+    private let bag = DisposeBag()
+    
+    private let spinner : CustomUIActivityIndicator = {
+        let indicator = CustomUIActivityIndicator()
+        return indicator
+    }()
         
     private let lottieAnimation : CustomLottieAnimation = {
         let animation = CustomLottieAnimation(
@@ -51,7 +60,8 @@ class SignInView: UIView {
     
     private let passwordTextField : CustomUITextField = {
         let textField = CustomUITextField(
-            placeHolderText: "Password"
+            placeHolderText: "Password",
+            isSecure: true
         )
         return textField
     }()
@@ -116,7 +126,7 @@ class SignInView: UIView {
         return button
     }()
     
-    private var signInStackView : CustomUIStackView = {
+    private let signInStackView : CustomUIStackView = {
         let stack = CustomUIStackView(
             stackAxis: .vertical,
             componentAlignment: .center,
@@ -156,6 +166,7 @@ class SignInView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         setUpViews()
         setUpConstraints()
+        setUpBindings()
         
     }
     
@@ -170,6 +181,7 @@ private extension SignInView {
     func setUpViews() {
         
         addSubViews(
+            spinner,
             lottieAnimation,
             welcomeStackView,
             emailPasswordStackView,
@@ -201,6 +213,9 @@ private extension SignInView {
     func setUpConstraints() {
         
         NSLayoutConstraint.activate([
+            
+            spinner.centerXAnchor.constraint(equalTo: centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: centerYAnchor),
             
             lottieAnimation.centerXAnchor.constraint(equalTo: centerXAnchor),
             lottieAnimation.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8),
@@ -235,6 +250,31 @@ private extension SignInView {
             signUpStackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
             
         ])
+        
+    }
+    
+    func setUpBindings() {
+        
+        viewModel
+            .isSigning
+            .bind(to: self.spinner.rx.isAnimating)
+            .disposed(by: bag)
+        
+        googleSignInButton
+            .rx
+            .tap
+            .bind {
+                self.viewModel.signInWithGoogle()
+            }.disposed(by: bag)
+        
+        signInButton
+            .rx
+            .tap
+            .bind{
+                self.viewModel.signInWithMail(
+                    email: self.emailTextField.text ?? "",
+                    password: self.passwordTextField.text ?? "")
+            }.disposed(by: bag)
         
     }
     

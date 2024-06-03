@@ -11,7 +11,11 @@ import RxCocoa
 
 class SignInViewController: UIViewController {
 
-    private let signInView = SignInView(frame: .zero,viewModel: SignInViewModel())
+    private let signInView = SignInView(
+        frame: .zero,
+        viewModel: SignInViewModel()
+    )
+    
     private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
@@ -20,18 +24,41 @@ class SignInViewController: UIViewController {
         navigationItem.backButtonTitle = ""
         setUpConstarints()
         bindViewModel()
+        Task{
+            do{
+                try SCAuthenticationManager.shared.signOut()
+                print("ÇIKIŞ BAŞARILI")
+            }catch{
+                print("ÇIKIŞTA HATA : \(error)")
+            }
+        }
     }
 }
 
 private extension SignInViewController {
     
     func bindViewModel() {
-    
-        signInView.signUpButton.rx.tap.bind {
-            let vc = SignUpViewController()
+        
+        signInView
+            .signUpButton
+            .rx
+            .tap
+            .bind {
+                let signUpViewController = SignUpViewController()
+                self.navigationController?.pushViewController(signUpViewController, animated: true)
+            }.disposed(by: disposeBag)
+        
+        signInView
+            .viewModel
+            .completedSigning
+            .subscribe(onNext: { [weak self] isCompleted in
+                let chatViewController = SCTabBarRootController()
+                chatViewController.modalPresentationStyle = .fullScreen
+                self?.present(chatViewController, animated: true)
+            }).disposed(by: disposeBag)
             
-            self.navigationController?.pushViewController(vc, animated: true)
-        }.disposed(by: disposeBag)
+        
+        
     }
     
     func setUpConstarints() {

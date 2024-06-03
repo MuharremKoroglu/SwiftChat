@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class CustomUILabel : UILabel {
+final class CustomUILabel : UILabel {
     
     let labelText : String
     let labelFont : UIFont

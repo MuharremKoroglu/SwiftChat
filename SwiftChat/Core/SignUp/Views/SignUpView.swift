@@ -6,8 +6,19 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class SignUpView: UIView {
+    
+    let viewModel : SignUpViewModel
+    
+    private let bag = DisposeBag()
+    
+    private let spinner : CustomUIActivityIndicator = {
+        let indicator = CustomUIActivityIndicator()
+        return indicator
+    }()
     
     private let signUpAnimation : CustomLottieAnimation = {
         let animation = CustomLottieAnimation(animationName: "signUp")
@@ -56,7 +67,8 @@ class SignUpView: UIView {
     
     private let userPasswordTextField : CustomUITextField = {
         let textField = CustomUITextField(
-            placeHolderText: "Password"
+            placeHolderText: "Password",
+            isSecure: true
         )
         return textField
     }()
@@ -78,11 +90,13 @@ class SignUpView: UIView {
         return button
     }()
     
-    override init(frame: CGRect) {
+    init(frame: CGRect, viewModel : SignUpViewModel) {
+        self.viewModel = viewModel
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
         setUpViews()
         setUpConstraints()
+        setUpBindings()
     }
     
     required init?(coder: NSCoder) {
@@ -96,6 +110,7 @@ private extension SignUpView {
     func setUpViews() {
         
         addSubViews(
+            spinner,
             signUpAnimation,
             greetingStackView,
             accountDetailStackView,
@@ -115,23 +130,26 @@ private extension SignUpView {
         
         NSLayoutConstraint.activate([
             
+            spinner.centerXAnchor.constraint(equalTo: centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: centerYAnchor),
+            
             signUpAnimation.centerXAnchor.constraint(equalTo: centerXAnchor),
             signUpAnimation.widthAnchor.constraint(equalTo: widthAnchor),
             signUpAnimation.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.3),
         
             greetingStackView.topAnchor.constraint(equalTo: signUpAnimation.bottomAnchor, constant: 10),
-            greetingStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            greetingStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             
             accountDetailStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
             accountDetailStackView.topAnchor.constraint(equalTo: greetingStackView.bottomAnchor, constant: 20),
-            userNameTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            userNameTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            userNameTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            userNameTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             userNameTextField.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.07),
-            userEmailTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            userEmailTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            userEmailTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            userEmailTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             userEmailTextField.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.07),
-            userPasswordTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            userPasswordTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            userPasswordTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            userPasswordTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             userPasswordTextField.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.07),
             
             signUpButton.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -142,6 +160,26 @@ private extension SignUpView {
         
         ])
         
+        
+    }
+    
+    
+    func setUpBindings() {
+        
+        viewModel
+            .isRegistering
+            .bind(to: self.spinner.rx.isAnimating)
+            .disposed(by: bag)
+        
+        signUpButton
+            .rx
+            .tap
+            .bind { [weak self] in
+                self?.viewModel.signUp(
+                    email: self?.userEmailTextField.text ?? "test@test.com",
+                    password: self?.userPasswordTextField.text ?? "123456789"
+                )
+            }.disposed(by: bag)
         
     }
     

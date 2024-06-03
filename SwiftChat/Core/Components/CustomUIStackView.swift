@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class CustomUIStackView : UIStackView {
+final class CustomUIStackView : UIStackView {
     
     let stackAxis : NSLayoutConstraint.Axis
     let componentAlignment : UIStackView.Alignment

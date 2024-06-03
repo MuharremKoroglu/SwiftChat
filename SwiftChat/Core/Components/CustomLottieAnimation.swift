@@ -8,7 +8,7 @@
 import Foundation
 import Lottie
 
-class CustomLottieAnimation : LottieAnimationView {
+final class CustomLottieAnimation : LottieAnimationView {
     
     let animationName : String
     
