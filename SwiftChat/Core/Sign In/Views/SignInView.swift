@@ -260,22 +260,31 @@ private extension SignInView {
             .bind(to: self.spinner.rx.isAnimating)
             .disposed(by: bag)
         
+        resetPasswordButton
+            .rx
+            .tap
+            .bind { [weak self] in
+                self?.viewModel.sendPasswordResetMail(
+                    email: self?.emailTextField.text ?? ""
+                )
+            }.disposed(by: bag)
+        
         googleSignInButton
             .rx
             .tap
-            .bind {
-                self.viewModel.signInWithGoogle()
+            .bind { [weak self] in
+                self?.viewModel.signInWithGoogle()
             }.disposed(by: bag)
         
         signInButton
             .rx
             .tap
-            .bind{
-                self.viewModel.signInWithMail(
-                    email: self.emailTextField.text ?? "",
-                    password: self.passwordTextField.text ?? "")
+            .bind{ [weak self] in
+                self?.viewModel.signInWithMail(
+                    email: self?.emailTextField.text ?? "",
+                    password: self?.passwordTextField.text ?? "")
             }.disposed(by: bag)
-        
+                
     }
     
 }

@@ -22,49 +22,22 @@ class SignInViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         navigationItem.backButtonTitle = ""
+        setUpViews()
         setUpConstarints()
         bindViewModel()
-        Task{
-            do{
-                try SCAuthenticationManager.shared.signOut()
-                print("ÇIKIŞ BAŞARILI")
-            }catch{
-                print("ÇIKIŞTA HATA : \(error)")
-            }
-        }
     }
 }
 
 private extension SignInViewController {
     
-    func bindViewModel() {
+    func setUpViews() {
         
-        signInView
-            .signUpButton
-            .rx
-            .tap
-            .bind {
-                let signUpViewController = SignUpViewController()
-                self.navigationController?.pushViewController(signUpViewController, animated: true)
-            }.disposed(by: disposeBag)
-        
-        signInView
-            .viewModel
-            .completedSigning
-            .subscribe(onNext: { [weak self] isCompleted in
-                let chatViewController = SCTabBarRootController()
-                chatViewController.modalPresentationStyle = .fullScreen
-                self?.present(chatViewController, animated: true)
-            }).disposed(by: disposeBag)
-            
-        
+        view.addSubViews(signInView)
         
     }
     
     func setUpConstarints() {
-        
-        view.addSubViews(signInView)
-        
+                
         NSLayoutConstraint.activate([
         
             signInView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -74,6 +47,40 @@ private extension SignInViewController {
         
         ])
         
+    }
+    
+    func bindViewModel() {
+        
+        signInView
+            .signUpButton
+            .rx
+            .tap
+            .bind { [weak self] in
+                let signUpViewController = SignUpViewController()
+                self?.navigationController?.pushViewController(signUpViewController, animated: true)
+            }.disposed(by: disposeBag)
+        
+        signInView
+            .viewModel
+            .completedSigning
+            .subscribe(onNext: { [weak self] isCompleted in
+                if isCompleted {
+                    let chatViewController = SCTabBarRootController()
+                    chatViewController.modalPresentationStyle = .fullScreen
+                    self?.present(chatViewController, animated: true)
+                }
+            }).disposed(by: disposeBag)
+        
+        signInView
+            .viewModel
+            .errorType
+            .subscribe(onNext: { alertType in
+                SCAlertmanager.presentAlert(
+                    viewController: self,
+                    alertType: alertType
+                )
+            }).disposed(by: disposeBag)
+            
     }
     
     

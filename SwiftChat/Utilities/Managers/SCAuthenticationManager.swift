@@ -10,7 +10,6 @@ import FirebaseAuth
 import GoogleSignIn
 import GoogleSignInSwift
 
-@MainActor
 final class SCAuthenticationManager {
     
     static let shared : SCAuthenticationManager = SCAuthenticationManager()
@@ -32,6 +31,7 @@ final class SCAuthenticationManager {
         return user
     }
     
+    @MainActor
     func signInWithGoogle () async throws {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let root = windowScene.windows.first?.rootViewController
@@ -47,11 +47,7 @@ final class SCAuthenticationManager {
         let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
         try await Auth.auth().signIn(with: credential)
     }
-    
-    func sendEmailVerification (email : String) async throws {
-        try await Auth.auth().sendPasswordReset(withEmail: email)
-    }
-    
+        
     func passwordReset (email : String) async throws{
         try await Auth.auth().sendPasswordReset(withEmail: email)
     }

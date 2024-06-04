@@ -54,9 +54,21 @@ private extension SignUpViewController {
             .viewModel
             .isSignUpCompleted
             .subscribe(onNext: { [weak self] isCompleted in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self?.navigationController?.popViewController(animated: true)
+                if isCompleted {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        self?.navigationController?.popViewController(animated: true)
+                    }
                 }
+            }).disposed(by: disposeBag)
+        
+        signUpView
+            .viewModel
+            .errorType
+            .subscribe(onNext: { alertType in
+                SCAlertmanager.presentAlert(
+                    viewController: self,
+                    alertType: alertType
+                )
             }).disposed(by: disposeBag)
         
     }

@@ -15,12 +15,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        let signInVC = SignInViewController()
-        let navigationController = UINavigationController(rootViewController: signInVC)
-        
         let window = UIWindow(windowScene: windowScene)
         window.tintColor = .systemOrange
-        window.rootViewController = navigationController
+        
+        if SCAuthenticationManager.shared.getAuthenticatedUser() == nil {
+            let signInViewController = SignInViewController()
+            let navigationController = UINavigationController(rootViewController: signInViewController)
+            window.rootViewController = navigationController
+        }else {
+            let chatViewController = SCTabBarRootController()
+            let navigationController = UINavigationController(rootViewController: chatViewController)
+            navigationController.navigationBar.isHidden = true
+            window.rootViewController = navigationController
+        }
+        
         window.makeKeyAndVisible()
         self.window = window
         
