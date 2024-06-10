@@ -61,7 +61,7 @@ class ContactsTableViewCell: UITableViewCell {
     
     func configureCell (contact : ContactInfo) {
         Task {
-            let response = await SCImageDownloader.shared.downloadImage(imageUrl: URL(string: contact.picture.large)!)
+            let response = await SCImageDownloaderManager.shared.downloadImage(imageUrl: URL(string: contact.picture.large)!)
             
             switch response {
             case .success(let data):

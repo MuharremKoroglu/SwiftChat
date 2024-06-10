@@ -8,6 +8,8 @@
 import Foundation
 
 struct ContactSection {
+    
     let letter: String
     let contacts: [ContactInfo]
+    
 }

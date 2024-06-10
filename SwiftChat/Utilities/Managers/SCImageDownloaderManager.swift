@@ -7,10 +7,9 @@
 
 import Foundation
 
-final class SCImageDownloader {
+final class SCImageDownloaderManager {
     
-    static let shared : SCImageDownloader = SCImageDownloader()
-    
+    static let shared : SCImageDownloaderManager = SCImageDownloaderManager()
     private init () {}
     
     private let downloadedImageCache = NSCache<NSString,NSData>()

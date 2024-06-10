@@ -25,7 +25,7 @@
 		3B2FB3A82BF7CB680099EA65 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2FB3A72BF7CB680099EA65 /* RxSwift */; };
 		3B49CCD62BF61F720019323D /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCD52BF61F720019323D /* ContactsViewController.swift */; };
 		3B49CCDA2BF645800019323D /* ContactsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCD92BF645800019323D /* ContactsTableViewCell.swift */; };
-		3B49CCDC2BF646C70019323D /* SCImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCDB2BF646C70019323D /* SCImageDownloader.swift */; };
+		3B49CCDC2BF646C70019323D /* SCImageDownloaderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCDB2BF646C70019323D /* SCImageDownloaderManager.swift */; };
 		3B49CCDE2BF662AF0019323D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCDD2BF662AF0019323D /* Extensions.swift */; };
 		3B49CCE22BF66A450019323D /* ContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCE12BF66A450019323D /* ContactsView.swift */; };
 		3B51D1DC2BF37A5100145F77 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B51D1DB2BF37A5100145F77 /* NetworkService.swift */; };
@@ -53,6 +53,10 @@
 		3B9A785A2BEE57CD00943945 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A78592BEE57CD00943945 /* SceneDelegate.swift */; };
 		3B9A785C2BEE57CD00943945 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A785B2BEE57CD00943945 /* ChatViewController.swift */; };
 		3B9A78612BEE57CE00943945 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B9A78602BEE57CE00943945 /* Assets.xcassets */; };
+		3BD74D3D2C15B8B1009399A3 /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD74D3C2C15B8B1009399A3 /* UserProfileModel.swift */; };
+		3BD74D3F2C15B9B5009399A3 /* SCDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD74D3E2C15B9B5009399A3 /* SCDatabaseManager.swift */; };
+		3BD74D412C15DEC8009399A3 /* SCMediaStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD74D402C15DEC8009399A3 /* SCMediaStorageManager.swift */; };
+		3BD74D432C15E189009399A3 /* MediaStorageFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD74D422C15E189009399A3 /* MediaStorageFolder.swift */; };
 		3BF96C362C0F4F5B00CA3ED3 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C352C0F4F5B00CA3ED3 /* SettingsView.swift */; };
 		3BF96C382C0F50A400CA3ED3 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C372C0F50A400CA3ED3 /* SettingsViewModel.swift */; };
 		3BF96C3A2C0F9E5800CA3ED3 /* AlertTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */; };
@@ -70,7 +74,7 @@
 		3B2FB3A22BF791AE0099EA65 /* ContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewModel.swift; sourceTree = "<group>"; };
 		3B49CCD52BF61F720019323D /* ContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		3B49CCD92BF645800019323D /* ContactsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsTableViewCell.swift; sourceTree = "<group>"; };
-		3B49CCDB2BF646C70019323D /* SCImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCImageDownloader.swift; sourceTree = "<group>"; };
+		3B49CCDB2BF646C70019323D /* SCImageDownloaderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCImageDownloaderManager.swift; sourceTree = "<group>"; };
 		3B49CCDD2BF662AF0019323D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		3B49CCE12BF66A450019323D /* ContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
 		3B51D1DB2BF37A5100145F77 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
@@ -99,6 +103,10 @@
 		3B9A785B2BEE57CD00943945 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		3B9A78602BEE57CE00943945 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3B9A78652BEE57CE00943945 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3BD74D3C2C15B8B1009399A3 /* UserProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
+		3BD74D3E2C15B9B5009399A3 /* SCDatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCDatabaseManager.swift; sourceTree = "<group>"; };
+		3BD74D402C15DEC8009399A3 /* SCMediaStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCMediaStorageManager.swift; sourceTree = "<group>"; };
+		3BD74D422C15E189009399A3 /* MediaStorageFolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStorageFolder.swift; sourceTree = "<group>"; };
 		3BF96C352C0F4F5B00CA3ED3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		3BF96C372C0F50A400CA3ED3 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTypes.swift; sourceTree = "<group>"; };
@@ -154,8 +162,10 @@
 		3B2B05252BF2389A007F6F52 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				3B49CCDB2BF646C70019323D /* SCImageDownloader.swift */,
+				3B49CCDB2BF646C70019323D /* SCImageDownloaderManager.swift */,
 				3B2155142C0E01050013501A /* SCAuthenticationManager.swift */,
+				3BD74D3E2C15B9B5009399A3 /* SCDatabaseManager.swift */,
+				3BD74D402C15DEC8009399A3 /* SCMediaStorageManager.swift */,
 				3BF96C3B2C0FA54600CA3ED3 /* SCAlertmanager.swift */,
 			);
 			path = Managers;
@@ -253,6 +263,8 @@
 				3B51D1DE2BF37CF700145F77 /* ContactsResponseModel.swift */,
 				3B51D1E02BF380E100145F77 /* ContactsRequestModel.swift */,
 				3B6A52072BFCA52D0082B2BE /* ContactSectionModel.swift */,
+				3BD74D3C2C15B8B1009399A3 /* UserProfileModel.swift */,
+				3BD74D422C15E189009399A3 /* MediaStorageFolder.swift */,
 				3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */,
 			);
 			path = Models;
@@ -543,6 +555,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BD74D3F2C15B9B5009399A3 /* SCDatabaseManager.swift in Sources */,
 				3B49CCDA2BF645800019323D /* ContactsTableViewCell.swift in Sources */,
 				3B2B052C2BF2390D007F6F52 /* ChannelsViewController.swift in Sources */,
 				3B49CCD62BF61F720019323D /* ContactsViewController.swift in Sources */,
@@ -550,12 +563,15 @@
 				3B51D1E52BF381C300145F77 /* Constants.swift in Sources */,
 				3BF96C362C0F4F5B00CA3ED3 /* SettingsView.swift in Sources */,
 				3B51D1E12BF380E100145F77 /* ContactsRequestModel.swift in Sources */,
+				3BD74D412C15DEC8009399A3 /* SCMediaStorageManager.swift in Sources */,
 				3B9A785C2BEE57CD00943945 /* ChatViewController.swift in Sources */,
+				3BD74D3D2C15B8B1009399A3 /* UserProfileModel.swift in Sources */,
 				3B9831102C05F79B00434027 /* CustomUILabel.swift in Sources */,
 				3B51D1E32BF3815B00145F77 /* RequestService.swift in Sources */,
 				3B2155152C0E01050013501A /* SCAuthenticationManager.swift in Sources */,
 				3B2FB3A32BF791AE0099EA65 /* ContactsViewModel.swift in Sources */,
 				3B584FE02C04ADC4009BF4D9 /* SignInViewModel.swift in Sources */,
+				3BD74D432C15E189009399A3 /* MediaStorageFolder.swift in Sources */,
 				3B584FD72C04A69C009BF4D9 /* SignInViewController.swift in Sources */,
 				3B9831172C060E3900434027 /* CustomUIStackView.swift in Sources */,
 				3B6A52082BFCA52D0082B2BE /* ContactSectionModel.swift in Sources */,
@@ -572,7 +588,7 @@
 				3B9831122C05F9E600434027 /* CustomDivider.swift in Sources */,
 				3B584FDE2C04AB08009BF4D9 /* SignInView.swift in Sources */,
 				3B9831142C05FAFB00434027 /* CustomLottieAnimation.swift in Sources */,
-				3B49CCDC2BF646C70019323D /* SCImageDownloader.swift in Sources */,
+				3B49CCDC2BF646C70019323D /* SCImageDownloaderManager.swift in Sources */,
 				3B51D1DF2BF37CF700145F77 /* ContactsResponseModel.swift in Sources */,
 				3B584FE52C05131A009BF4D9 /* CustomUIButton.swift in Sources */,
 				3B49CCE22BF66A450019323D /* ContactsView.swift in Sources */,

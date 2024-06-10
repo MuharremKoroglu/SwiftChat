@@ -13,7 +13,6 @@ import GoogleSignInSwift
 final class SCAuthenticationManager {
     
     static let shared : SCAuthenticationManager = SCAuthenticationManager()
-    
     private init () {}
     
     func getAuthenticatedUser () -> User? {
