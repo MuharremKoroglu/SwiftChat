@@ -20,8 +20,10 @@ final class SCAuthenticationManager {
         return user
     }
     
-    func createNewUser (email : String, password : String) async throws {
-        try await Auth.auth().createUser(withEmail: email, password: password)
+    func createNewUser (email : String, password : String) async throws -> User{
+        let authResult = try await Auth.auth().createUser(withEmail: email, password: password)
+        let user = authResult.user
+        return user
     }
     
     func signInWithEmailAndPassword (email : String, password : String) async throws -> User{
@@ -31,7 +33,7 @@ final class SCAuthenticationManager {
     }
     
     @MainActor
-    func signInWithGoogle () async throws {
+    func signInWithGoogle () async throws -> GIDGoogleUser{
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let root = windowScene.windows.first?.rootViewController
         else{
@@ -45,6 +47,7 @@ final class SCAuthenticationManager {
         let accessToken = user.accessToken.tokenString
         let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
         try await Auth.auth().signIn(with: credential)
+        return user
     }
         
     func passwordReset (email : String) async throws{

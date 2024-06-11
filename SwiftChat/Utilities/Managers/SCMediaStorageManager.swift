@@ -16,7 +16,7 @@ final class SCMediaStorageManager {
     
     private let storage = Storage.storage().reference()
     
-    func uploadData (folderName : MediaStorageFolder, fileName : String, data : Data) async throws -> URL{
+    func uploadData (folderName : MediaStorageFolderNames, fileName : String, data : Data) async throws -> URL{
         
         let metaData = StorageMetadata()
         metaData.contentType = "image/jpeg"

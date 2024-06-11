@@ -53,10 +53,11 @@
 		3B9A785A2BEE57CD00943945 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A78592BEE57CD00943945 /* SceneDelegate.swift */; };
 		3B9A785C2BEE57CD00943945 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A785B2BEE57CD00943945 /* ChatViewController.swift */; };
 		3B9A78612BEE57CE00943945 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B9A78602BEE57CE00943945 /* Assets.xcassets */; };
+		3BC1FE8B2C1870FD007754E0 /* CustomUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC1FE8A2C1870FD007754E0 /* CustomUIImageView.swift */; };
 		3BD74D3D2C15B8B1009399A3 /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD74D3C2C15B8B1009399A3 /* UserProfileModel.swift */; };
 		3BD74D3F2C15B9B5009399A3 /* SCDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD74D3E2C15B9B5009399A3 /* SCDatabaseManager.swift */; };
 		3BD74D412C15DEC8009399A3 /* SCMediaStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD74D402C15DEC8009399A3 /* SCMediaStorageManager.swift */; };
-		3BD74D432C15E189009399A3 /* MediaStorageFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD74D422C15E189009399A3 /* MediaStorageFolder.swift */; };
+		3BD74D432C15E189009399A3 /* MediaStorageFolderNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD74D422C15E189009399A3 /* MediaStorageFolderNames.swift */; };
 		3BF96C362C0F4F5B00CA3ED3 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C352C0F4F5B00CA3ED3 /* SettingsView.swift */; };
 		3BF96C382C0F50A400CA3ED3 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C372C0F50A400CA3ED3 /* SettingsViewModel.swift */; };
 		3BF96C3A2C0F9E5800CA3ED3 /* AlertTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */; };
@@ -103,10 +104,11 @@
 		3B9A785B2BEE57CD00943945 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		3B9A78602BEE57CE00943945 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3B9A78652BEE57CE00943945 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3BC1FE8A2C1870FD007754E0 /* CustomUIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUIImageView.swift; sourceTree = "<group>"; };
 		3BD74D3C2C15B8B1009399A3 /* UserProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
 		3BD74D3E2C15B9B5009399A3 /* SCDatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCDatabaseManager.swift; sourceTree = "<group>"; };
 		3BD74D402C15DEC8009399A3 /* SCMediaStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCMediaStorageManager.swift; sourceTree = "<group>"; };
-		3BD74D422C15E189009399A3 /* MediaStorageFolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStorageFolder.swift; sourceTree = "<group>"; };
+		3BD74D422C15E189009399A3 /* MediaStorageFolderNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStorageFolderNames.swift; sourceTree = "<group>"; };
 		3BF96C352C0F4F5B00CA3ED3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		3BF96C372C0F50A400CA3ED3 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTypes.swift; sourceTree = "<group>"; };
@@ -264,7 +266,7 @@
 				3B51D1E02BF380E100145F77 /* ContactsRequestModel.swift */,
 				3B6A52072BFCA52D0082B2BE /* ContactSectionModel.swift */,
 				3BD74D3C2C15B8B1009399A3 /* UserProfileModel.swift */,
-				3BD74D422C15E189009399A3 /* MediaStorageFolder.swift */,
+				3BD74D422C15E189009399A3 /* MediaStorageFolderNames.swift */,
 				3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */,
 			);
 			path = Models;
@@ -386,6 +388,7 @@
 				3B584FE22C04D5F3009BF4D9 /* CustomUITextField.swift */,
 				3B584FE42C05131A009BF4D9 /* CustomUIButton.swift */,
 				3B98310F2C05F79B00434027 /* CustomUILabel.swift */,
+				3BC1FE8A2C1870FD007754E0 /* CustomUIImageView.swift */,
 				3B9831162C060E3900434027 /* CustomUIStackView.swift */,
 				3B9831112C05F9E600434027 /* CustomDivider.swift */,
 				3B9831132C05FAFB00434027 /* CustomLottieAnimation.swift */,
@@ -567,11 +570,12 @@
 				3B9A785C2BEE57CD00943945 /* ChatViewController.swift in Sources */,
 				3BD74D3D2C15B8B1009399A3 /* UserProfileModel.swift in Sources */,
 				3B9831102C05F79B00434027 /* CustomUILabel.swift in Sources */,
+				3BC1FE8B2C1870FD007754E0 /* CustomUIImageView.swift in Sources */,
 				3B51D1E32BF3815B00145F77 /* RequestService.swift in Sources */,
 				3B2155152C0E01050013501A /* SCAuthenticationManager.swift in Sources */,
 				3B2FB3A32BF791AE0099EA65 /* ContactsViewModel.swift in Sources */,
 				3B584FE02C04ADC4009BF4D9 /* SignInViewModel.swift in Sources */,
-				3BD74D432C15E189009399A3 /* MediaStorageFolder.swift in Sources */,
+				3BD74D432C15E189009399A3 /* MediaStorageFolderNames.swift in Sources */,
 				3B584FD72C04A69C009BF4D9 /* SignInViewController.swift in Sources */,
 				3B9831172C060E3900434027 /* CustomUIStackView.swift in Sources */,
 				3B6A52082BFCA52D0082B2BE /* ContactSectionModel.swift in Sources */,

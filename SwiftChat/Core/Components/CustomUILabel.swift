@@ -13,11 +13,13 @@ final class CustomUILabel : UILabel {
     let labelText : String
     let labelFont : UIFont
     let labelTextColor : UIColor?
+    let labelTextAlignment : NSTextAlignment
     
-    init(labelText : String, labelFont : UIFont, labelTextColor : UIColor? = .label) {
+    init(labelText : String, labelFont : UIFont, labelTextColor : UIColor? = .label, labelTextAlignment : NSTextAlignment = .natural) {
         self.labelText = labelText
         self.labelFont = labelFont
         self.labelTextColor = labelTextColor
+        self.labelTextAlignment = labelTextAlignment
         super.init(frame: .zero)
         setUpLabel()
     }
@@ -32,6 +34,7 @@ final class CustomUILabel : UILabel {
         text = self.labelText
         font = self.labelFont
         textColor = self.labelTextColor
+        textAlignment = self.labelTextAlignment
         
         
     }

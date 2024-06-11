@@ -176,6 +176,7 @@ private extension SignUpView {
             .tap
             .bind { [weak self] in
                 self?.viewModel.signUp(
+                    userName: self?.userNameTextField.text ?? "Test",
                     email: self?.userEmailTextField.text ?? "test@test.com",
                     password: self?.userPasswordTextField.text ?? "123456789"
                 )

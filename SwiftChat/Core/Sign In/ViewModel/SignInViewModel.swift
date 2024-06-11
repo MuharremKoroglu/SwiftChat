@@ -9,6 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 import FirebaseAuth
+import UIKit
 
 @MainActor
 class SignInViewModel {
@@ -61,23 +62,55 @@ class SignInViewModel {
     }
     
     func signInWithGoogle() {
-        
         isSigning.onNext(true)
         
         Task {
             do {
-                try await SCAuthenticationManager.shared.signInWithGoogle()
+                let user = try await SCAuthenticationManager.shared.signInWithGoogle()
+                
+                guard let userProfile = user.profile else { return }
+                
+                let userName = userProfile.givenName ?? ""
+                let userEmail = userProfile.email
+                
+                let userProfileImageURL: URL
+                
+                if userProfile.hasImage {
+                    userProfileImageURL = userProfile.imageURL(withDimension: 200) ?? URL(string: "https://www.google.com")!
+                } else {
+                    guard let imageData = UIImage(named: "anon_user")?.jpegData(compressionQuality: 1) else {
+                        return
+                    }
+                    
+                    userProfileImageURL = try await SCMediaStorageManager.shared.uploadData(
+                        folderName: .profilePictures,
+                        fileName: user.userID ?? "",
+                        data: imageData
+                    )
+                }
+                
+                let authenticatedUser =  SCAuthenticationManager.shared.getAuthenticatedUser()
+                
+                let userModel = UserProfileModel(
+                    profileImage: userProfileImageURL,
+                    userName: userName,
+                    userEmail: userEmail,
+                    accountCreatedDate: Date()
+                )
+                
+                try await SCDatabaseManager.shared.createData(userId: authenticatedUser?.uid ?? "", data: userModel)
+
                 isSigning.onNext(false)
                 completedSigning.onNext(true)
-            }catch {
+            } catch {
                 isSigning.onNext(false)
                 completedSigning.onNext(false)
                 errorType.onNext(.commonError)
                 print("GOOGLE ile girişte hata : \(error)")
             }
         }
-        
     }
+
     
     func sendPasswordResetMail(email : String) {
         

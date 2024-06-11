@@ -7,9 +7,9 @@
 
 import Foundation
 
-enum MediaStorageFolder : String {
+enum MediaStorageFolderNames : String {
     
-    case ProfilePictures = "profile_pictures"
+    case profilePictures = "user_profiles"
 
     
 }
