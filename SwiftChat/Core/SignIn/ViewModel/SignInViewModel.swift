@@ -23,7 +23,7 @@ class SignInViewModel {
         isSigning.onNext(true)
         
         if !email.isEmpty && !password.isEmpty {
-                        
+            
             Task {
                 do {
                     let user = try await SCAuthenticationManager.shared.signInWithEmailAndPassword(
@@ -70,7 +70,7 @@ class SignInViewModel {
                 
                 guard let userProfile = user.profile else { return }
                 
-                let userName = userProfile.givenName ?? ""
+                let userName = userProfile.name
                 let userEmail = userProfile.email
                 
                 let userProfileImageURL: URL
@@ -89,17 +89,25 @@ class SignInViewModel {
                     )
                 }
                 
-                let authenticatedUser =  SCAuthenticationManager.shared.getAuthenticatedUser()
+                guard let authenticatedUser =  SCAuthenticationManager.shared.getAuthenticatedUser() else {return}
                 
-                let userModel = UserProfileModel(
+                let userModel = FirebaseUserModel(
                     profileImage: userProfileImageURL,
-                    userName: userName,
+                    userId: authenticatedUser.uid,
+                    userName: userName.capitalized,
                     userEmail: userEmail,
+                    userPhoneNumber: "(647) 463-2587",
                     accountCreatedDate: Date()
                 )
                 
-                try await SCDatabaseManager.shared.createData(userId: authenticatedUser?.uid ?? "", data: userModel)
-
+                try await SCDatabaseManager
+                    .shared
+                    .createData(
+                        collectionId: .users,
+                        documentId: authenticatedUser.uid,
+                        data: userModel
+                    )
+                
                 isSigning.onNext(false)
                 completedSigning.onNext(true)
             } catch {
@@ -110,7 +118,7 @@ class SignInViewModel {
             }
         }
     }
-
+    
     
     func sendPasswordResetMail(email : String) {
         
@@ -134,7 +142,7 @@ class SignInViewModel {
             isSigning.onNext(false)
             errorType.onNext(.blankError)
         }
-
+        
     }
     
 }

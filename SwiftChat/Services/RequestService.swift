@@ -44,18 +44,18 @@ enum RequestService {
         case .contactsReuqest:
             var components = URLComponents(url: baseURL.appendingPathComponent(path), resolvingAgainstBaseURL: true)
             
-            let data : ContactsRequestModel = ContactsRequestModel(
+            let data : APIUserRequestModel = APIUserRequestModel(
                 results: 100,
-                include: "name,picture,phone",
+                include: "name,picture,phone,email,login",
                 nationality: "us",
                 noinfo: "noinfo"
             )
             
             components?.queryItems = [
-                URLQueryItem(name: ContactsRequestModel.CodingKeys.results.rawValue, value: "\(data.results)"),
-                URLQueryItem(name: ContactsRequestModel.CodingKeys.include.rawValue, value: data.include),
-                URLQueryItem(name: ContactsRequestModel.CodingKeys.nationality.rawValue, value: data.nationality),
-                URLQueryItem(name: ContactsRequestModel.CodingKeys.noinfo.rawValue, value: data.noinfo)
+                URLQueryItem(name: APIUserRequestModel.CodingKeys.results.rawValue, value: "\(data.results)"),
+                URLQueryItem(name: APIUserRequestModel.CodingKeys.include.rawValue, value: data.include),
+                URLQueryItem(name: APIUserRequestModel.CodingKeys.nationality.rawValue, value: data.nationality),
+                URLQueryItem(name: APIUserRequestModel.CodingKeys.noinfo.rawValue, value: data.noinfo)
             ]
             
             return components?.url ?? baseURL.appendingPathComponent(path)

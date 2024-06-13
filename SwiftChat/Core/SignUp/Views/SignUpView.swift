@@ -58,6 +58,13 @@ class SignUpView: UIView {
         return textField
     }()
     
+    private let phoneNumberTextField : CustomUITextField = {
+        let textField = CustomUITextField(
+            placeHolderText: "Phone Number"
+        )
+        return textField
+    }()
+    
     private let userEmailTextField : CustomUITextField = {
         let textField = CustomUITextField(
             placeHolderText: "Email"
@@ -121,6 +128,7 @@ private extension SignUpView {
         greetingStackView.addArrangedSubview(descriptionlabel)
         
         accountDetailStackView.addArrangedSubview(userNameTextField)
+        accountDetailStackView.addArrangedSubview(phoneNumberTextField)
         accountDetailStackView.addArrangedSubview(userEmailTextField)
         accountDetailStackView.addArrangedSubview(userPasswordTextField)
         
@@ -145,6 +153,9 @@ private extension SignUpView {
             userNameTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             userNameTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             userNameTextField.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.07),
+            phoneNumberTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            phoneNumberTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            phoneNumberTextField.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.07),
             userEmailTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             userEmailTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             userEmailTextField.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.07),
@@ -176,9 +187,10 @@ private extension SignUpView {
             .tap
             .bind { [weak self] in
                 self?.viewModel.signUp(
-                    userName: self?.userNameTextField.text ?? "Test",
-                    email: self?.userEmailTextField.text ?? "test@test.com",
-                    password: self?.userPasswordTextField.text ?? "123456789"
+                    userName: self?.userNameTextField.text ?? "",
+                    phoneNumber: self?.phoneNumberTextField.text ?? "",
+                    email: self?.userEmailTextField.text ?? "",
+                    password: self?.userPasswordTextField.text ?? ""
                 )
             }.disposed(by: bag)
         

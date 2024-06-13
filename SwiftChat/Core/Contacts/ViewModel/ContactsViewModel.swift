@@ -16,7 +16,7 @@ class ContactsViewModel {
     var isFetching = PublishSubject<Bool>()
     
     private let service = NetworkService()
-    private var contacts: [ContactInfo] = []
+    private var contacts: [ContactModel] = []
     
     func fetchContacts() {
         self.isFetching.onNext(true)
@@ -24,20 +24,36 @@ class ContactsViewModel {
         Task {
             let response = await service.networkService(
                 service: .contactsReuqest,
-                data: ContactsResponseModel.self
+                data: APIUsersModel.self
             )
             
-            switch response {
-            case .success(let fetchedContacts):
-                let sortedContacts = fetchedContacts.results.sorted { $0.name.first < $1.name.first }
-                self.isFetching.onNext(false)
-                contacts = sortedContacts
-                let sections = self.groupContactsByLetter(contacts: sortedContacts)
-                self.filteredContacts.onNext(sections)
-            case .failure(let error):
-                self.isFetching.onNext(false)
-                print(error)
+            do {
+                let registeredUsers = try await SCDatabaseManager.shared.readMultipleData(
+                    collectionId: .users,
+                    data: FirebaseUserModel.self
+                )
+                
+                switch response {
+                case .success(let fetchedContacts):
+                    
+                    let apiUsers = fetchedContacts.results.map({ContactModel(from: $0)})
+                    
+                    let firebaseUsers = registeredUsers.map({ContactModel(from: $0)})
+                    
+                    contacts = apiUsers + firebaseUsers
+                    contacts.sort{$0.name < $1.name}
+                    
+                    let sections = self.groupContactsByLetter(contacts: contacts)
+                    self.filteredContacts.onNext(sections)
+                    self.isFetching.onNext(false)
+                case .failure(let error):
+                    self.isFetching.onNext(false)
+                    print(error)
+                }
+            }catch {
+                print("Kullanıcı verileri alınırken bir hata oluştu : \(error)")
             }
+            
         }
     }
     
@@ -45,9 +61,9 @@ class ContactsViewModel {
 
 extension ContactsViewModel {
     
-    private func groupContactsByLetter(contacts: [ContactInfo]) -> [ContactSection] {
+    private func groupContactsByLetter(contacts: [ContactModel]) -> [ContactSection] {
         let groupedDict = Dictionary(grouping: contacts) {
-            $0.name.first.prefix(1)
+            $0.name.prefix(1)
         }
         
         let sortedGroupedDict = groupedDict.map {
@@ -63,9 +79,8 @@ extension ContactsViewModel {
             filteredContacts.onNext(sections)
         } else {
             let filteredList = contacts.filter {
-                $0.name.first.lowercased().contains(searchText.lowercased()) ||
-                $0.name.last.lowercased().contains(searchText.lowercased()) ||
-                $0.phone.lowercased().contains(searchText.lowercased())
+                $0.name.lowercased().contains(searchText.lowercased()) ||
+                ($0.phone.lowercased().contains(searchText.lowercased()))
             }
             let sections = self.groupContactsByLetter(contacts: filteredList)
             filteredContacts.onNext(sections)

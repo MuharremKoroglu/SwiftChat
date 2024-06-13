@@ -14,40 +14,61 @@ final class SCDatabaseManager {
     static let shared = SCDatabaseManager()
     private init () {}
     
-    private let userCollection = Firestore.firestore().collection("Users")
+    private let fireStore = Firestore.firestore()
     
-    private func getDocumentReference (documentId : String) -> DocumentReference {
+    private func getCollectionReference (collection : DatabaseCollections) -> CollectionReference {
         
-        return userCollection.document(documentId)
+        return fireStore.collection(collection.rawValue)
         
     }
     
-    func createData <T : Encodable> (userId : String, data : T) async throws {
+    private func getDocumentReference (collectionId : DatabaseCollections, documentId : String) -> DocumentReference {
         
-        try getDocumentReference(documentId: userId).setData(from: data, merge: false)
-        
-    }
-    
-    func readData <T: Decodable> (userId : String, data : T.Type) async throws -> T {
-        
-        return try await getDocumentReference(documentId: userId).getDocument(as: data.self)
+        return getCollectionReference(collection: .users).document(documentId)
         
     }
     
-    func updateData (userId : String, field: String, newValue : Any) async throws{
+    func createData <T : Encodable> (collectionId : DatabaseCollections, documentId : String, data : T) async throws {
+        
+        try getDocumentReference(collectionId: collectionId, documentId: documentId).setData(from: data, merge: false)
+        
+    }
+    
+    func readSingleData <T: Decodable> (collectionId : DatabaseCollections, documentId : String, data : T.Type) async throws -> T {
+        
+        return try await getDocumentReference(collectionId: collectionId, documentId: documentId).getDocument(as: data.self)
+        
+    }
+    
+    func readMultipleData <T : Decodable> (collectionId : DatabaseCollections, data : T.Type) async throws -> [T]{
+        
+        let snapshot = try await getCollectionReference(collection: collectionId).getDocuments()
+        
+        var dataModels: [T] = []
+        for document in snapshot.documents {
+            if let dataModel = try? document.data(as: data.self) {
+                dataModels.append(dataModel)
+            }
+        }
+        
+        return dataModels
+
+    }
+    
+    func updateData (collectionId : DatabaseCollections, documentId : String, field: String, newValue : Any) async throws{
         
         let updatedData : [String : Any] = [
             field : newValue
         ]
         
-        try await getDocumentReference(documentId: userId).updateData(updatedData)
+        try await getDocumentReference(collectionId: collectionId, documentId: documentId).updateData(updatedData)
 
     }
     
     
-    func deleteData(userId : String) async throws {
+    func deleteData(collectionId: DatabaseCollections, userId : String) async throws {
         
-        try await getDocumentReference(documentId: userId).delete()
+        try await getDocumentReference(collectionId: collectionId, documentId: userId).delete()
         
     }
     

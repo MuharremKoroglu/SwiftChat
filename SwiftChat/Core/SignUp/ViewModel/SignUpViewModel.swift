@@ -17,7 +17,7 @@ class SignUpViewModel {
     var isRegistering = PublishSubject<Bool>()
     var errorType = PublishSubject<AlertTypes>()
     
-    func signUp(userName : String, email : String, password: String) {
+    func signUp(userName : String, phoneNumber : String ,email : String, password: String) {
         
         isRegistering.onNext(true)
         
@@ -29,6 +29,8 @@ class SignUpViewModel {
                         password: password
                     )
                     
+                    try SCAuthenticationManager.shared.signOut()
+                    
                     guard let imageData = UIImage(named: "anon_user")?.jpegData(compressionQuality: 1) else { return }
                     
                     let imageUrl = try await SCMediaStorageManager.shared.uploadData(
@@ -37,17 +39,22 @@ class SignUpViewModel {
                         data: imageData
                     )
                     
-                    let userModel = UserProfileModel(
+                    let userModel = FirebaseUserModel(
                         profileImage: imageUrl,
+                        userId: user.uid,
                         userName: userName,
                         userEmail: email,
+                        userPhoneNumber: phoneNumber,
                         accountCreatedDate: Date()
                     )
                     
-                    try await SCDatabaseManager.shared.createData(userId: user.uid, data: userModel)
+                    try await SCDatabaseManager.shared.createData(
+                        collectionId: .users,
+                        documentId: user.uid,
+                        data: userModel
+                    )
                     
                     isRegistering.onNext(false)
-                    
                     isSignUpCompleted.onNext(true)
                     
                 }catch {
@@ -62,5 +69,5 @@ class SignUpViewModel {
             self.errorType.onNext(.blankError)
         }
     }
-
+    
 }

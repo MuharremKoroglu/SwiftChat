@@ -59,9 +59,9 @@ class ContactsTableViewCell: UITableViewCell {
         contactProfileImage.layer.cornerRadius = contactProfileImage.frame.size.width / 2
     }
     
-    func configureCell (contact : ContactInfo) {
+    func configureCell (contact : ContactModel) {
         Task {
-            let response = await SCImageDownloaderManager.shared.downloadImage(imageUrl: URL(string: contact.picture.large)!)
+            let response = await SCImageDownloaderManager.shared.downloadImage(imageUrl: contact.profileImageURL)
             
             switch response {
             case .success(let data):
@@ -71,7 +71,7 @@ class ContactsTableViewCell: UITableViewCell {
             }
             
         }
-        self.contactName.text = contact.name.first + " " + contact.name.last
+        self.contactName.text = contact.name
         self.contactPhoneNumber.text = contact.phone
         
     }

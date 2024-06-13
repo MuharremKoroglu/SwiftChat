@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ContactsRequestModel : Codable {
+struct APIUserRequestModel : Codable {
     
     let results : Int
     let include : String
