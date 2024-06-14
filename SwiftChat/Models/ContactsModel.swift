@@ -13,7 +13,6 @@ struct ContactModel: Codable {
     let email: String
     let phone: String
     let profileImageURL: URL
-    let isRegisteredUser: Bool
 }
 
 extension ContactModel {
@@ -23,7 +22,6 @@ extension ContactModel {
         self.email = firebaseUser.userEmail
         self.phone = firebaseUser.userPhoneNumber
         self.profileImageURL = firebaseUser.profileImage
-        self.isRegisteredUser = true
     }
 }
 
@@ -34,7 +32,6 @@ extension ContactModel {
         self.email = apiUser.email
         self.phone = apiUser.phone
         self.profileImageURL = URL(string: apiUser.picture.large)!
-        self.isRegisteredUser = false
     }
 }
 

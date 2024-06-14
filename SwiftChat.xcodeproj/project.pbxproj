@@ -60,6 +60,9 @@
 		3BD74D3F2C15B9B5009399A3 /* SCDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD74D3E2C15B9B5009399A3 /* SCDatabaseManager.swift */; };
 		3BD74D412C15DEC8009399A3 /* SCMediaStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD74D402C15DEC8009399A3 /* SCMediaStorageManager.swift */; };
 		3BD74D432C15E189009399A3 /* MediaStorageFolderNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD74D422C15E189009399A3 /* MediaStorageFolderNames.swift */; };
+		3BDBF4052C1C1E9500B468C9 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBF4042C1C1E9500B468C9 /* MessageViewController.swift */; };
+		3BDBF4072C1C1EAE00B468C9 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBF4062C1C1EAE00B468C9 /* MessageView.swift */; };
+		3BDBF4092C1C1EBE00B468C9 /* MessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBF4082C1C1EBE00B468C9 /* MessageViewModel.swift */; };
 		3BF96C362C0F4F5B00CA3ED3 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C352C0F4F5B00CA3ED3 /* SettingsView.swift */; };
 		3BF96C382C0F50A400CA3ED3 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C372C0F50A400CA3ED3 /* SettingsViewModel.swift */; };
 		3BF96C3A2C0F9E5800CA3ED3 /* AlertTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */; };
@@ -113,6 +116,9 @@
 		3BD74D3E2C15B9B5009399A3 /* SCDatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCDatabaseManager.swift; sourceTree = "<group>"; };
 		3BD74D402C15DEC8009399A3 /* SCMediaStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCMediaStorageManager.swift; sourceTree = "<group>"; };
 		3BD74D422C15E189009399A3 /* MediaStorageFolderNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStorageFolderNames.swift; sourceTree = "<group>"; };
+		3BDBF4042C1C1E9500B468C9 /* MessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
+		3BDBF4062C1C1EAE00B468C9 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
+		3BDBF4082C1C1EBE00B468C9 /* MessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewModel.swift; sourceTree = "<group>"; };
 		3BF96C352C0F4F5B00CA3ED3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		3BF96C372C0F50A400CA3ED3 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTypes.swift; sourceTree = "<group>"; };
@@ -196,6 +202,7 @@
 				3B584FD22C04A62B009BF4D9 /* SignIn */,
 				3B9831182C0614AF00434027 /* SignUp */,
 				3B51D1E62BF39A0F00145F77 /* Chats */,
+				3BDBF4002C1C1E5800B468C9 /* Message */,
 				3B49CCD22BF61EF60019323D /* Contacts */,
 				3B51D1E92BF39A4A00145F77 /* Channels */,
 				3B51D1EC2BF39A6C00145F77 /* Settings */,
@@ -467,6 +474,40 @@
 			path = SwiftChat;
 			sourceTree = "<group>";
 		};
+		3BDBF4002C1C1E5800B468C9 /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				3BDBF4032C1C1E7500B468C9 /* ViewController */,
+				3BDBF4022C1C1E6F00B468C9 /* Views */,
+				3BDBF4012C1C1E6800B468C9 /* ViewModel */,
+			);
+			path = Message;
+			sourceTree = "<group>";
+		};
+		3BDBF4012C1C1E6800B468C9 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				3BDBF4082C1C1EBE00B468C9 /* MessageViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		3BDBF4022C1C1E6F00B468C9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3BDBF4062C1C1EAE00B468C9 /* MessageView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3BDBF4032C1C1E7500B468C9 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				3BDBF4042C1C1E9500B468C9 /* MessageViewController.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
 		3BF96C342C0F4F4400CA3ED3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -568,6 +609,7 @@
 				3B49CCDA2BF645800019323D /* ContactsTableViewCell.swift in Sources */,
 				3B2B052C2BF2390D007F6F52 /* ChannelsViewController.swift in Sources */,
 				3B49CCD62BF61F720019323D /* ContactsViewController.swift in Sources */,
+				3BDBF4092C1C1EBE00B468C9 /* MessageViewModel.swift in Sources */,
 				3B584FE32C04D5F3009BF4D9 /* CustomUITextField.swift in Sources */,
 				3B51D1E52BF381C300145F77 /* Constants.swift in Sources */,
 				3BF96C362C0F4F5B00CA3ED3 /* SettingsView.swift in Sources */,
@@ -583,6 +625,8 @@
 				3B2155152C0E01050013501A /* SCAuthenticationManager.swift in Sources */,
 				3B2FB3A32BF791AE0099EA65 /* ContactsViewModel.swift in Sources */,
 				3B584FE02C04ADC4009BF4D9 /* SignInViewModel.swift in Sources */,
+				3BDBF4052C1C1E9500B468C9 /* MessageViewController.swift in Sources */,
+				3BDBF4072C1C1EAE00B468C9 /* MessageView.swift in Sources */,
 				3BD74D432C15E189009399A3 /* MediaStorageFolderNames.swift in Sources */,
 				3B584FD72C04A69C009BF4D9 /* SignInViewController.swift in Sources */,
 				3B9831172C060E3900434027 /* CustomUIStackView.swift in Sources */,

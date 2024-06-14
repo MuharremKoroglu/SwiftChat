@@ -13,6 +13,8 @@ class ContactsView: UIView {
     
     let viewModel: ContactsViewModel
     
+    var selectedUser = PublishSubject<ContactModel>()
+    
     var contactSections: [ContactSection] = []
     
     private let bag = DisposeBag()
@@ -35,6 +37,7 @@ class ContactsView: UIView {
         self.viewModel = viewModel
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
+        setUpViews()
         setUpConstraints()
         setUpTableView()
         setUpBindings()
@@ -43,13 +46,39 @@ class ContactsView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+}
+
+private extension ContactsView {
     
-    private func setUpTableView () {
+    func setUpTableView () {
         contactsTableView.delegate = self
         contactsTableView.dataSource = self
     }
     
-    private func setUpBindings() {
+    func setUpViews() {
+        
+        addSubview(spinner)
+        addSubview(contactsTableView)
+        
+    }
+    
+    func setUpConstraints() {
+        
+        NSLayoutConstraint.activate([
+            spinner.widthAnchor.constraint(equalToConstant: 100),
+            spinner.heightAnchor.constraint(equalToConstant: 100),
+            spinner.centerXAnchor.constraint(equalTo: centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: centerYAnchor),
+            
+            contactsTableView.topAnchor.constraint(equalTo: topAnchor),
+            contactsTableView.leftAnchor.constraint(equalTo: leftAnchor),
+            contactsTableView.rightAnchor.constraint(equalTo: rightAnchor),
+            contactsTableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }
+    
+    func setUpBindings() {
         
         viewModel
             .isFetching
@@ -67,23 +96,6 @@ class ContactsView: UIView {
         viewModel.fetchContacts()
     }
     
-    private func setUpConstraints() {
-        
-        addSubViews(spinner, contactsTableView)
-        
-        NSLayoutConstraint.activate([
-            spinner.widthAnchor.constraint(equalToConstant: 100),
-            spinner.heightAnchor.constraint(equalToConstant: 100),
-            spinner.centerXAnchor.constraint(equalTo: centerXAnchor),
-            spinner.centerYAnchor.constraint(equalTo: centerYAnchor),
-            
-            contactsTableView.topAnchor.constraint(equalTo: topAnchor),
-            contactsTableView.leftAnchor.constraint(equalTo: leftAnchor),
-            contactsTableView.rightAnchor.constraint(equalTo: rightAnchor),
-            contactsTableView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-    }
-
 }
 
 extension ContactsView : UITableViewDelegate, UITableViewDataSource {
@@ -94,6 +106,11 @@ extension ContactsView : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return contactSections[section].contacts.count
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedUser = contactSections[indexPath.section].contacts[indexPath.row]
+        self.selectedUser.onNext(selectedUser)
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
