@@ -11,11 +11,25 @@ import RxCocoa
 
 class ChatViewController: UIViewController {
     
+    private let contactsPage = ContactsViewController()
+    
     private let bag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        contactsPageButton()
+        setUpBindings()
+    }
+    
+    
+}
+
+private extension ChatViewController {
+    
+    
+    func contactsPageButton() {
+        
         navigationItem.backButtonTitle = ""
         
         navigationController?.navigationBar.topItem?.setRightBarButton(UIBarButtonItem(
@@ -27,28 +41,26 @@ class ChatViewController: UIViewController {
         
     }
     
+    
     @objc func openContactsList () {
-        let contactsPage = ContactsViewController()
+        
+        let contactsPageNavigationController = UINavigationController(rootViewController: contactsPage)
+        self.present(contactsPageNavigationController, animated: true)
+        
+    }
+    
+    func setUpBindings() {
         
         contactsPage
             .selectedUser
             .subscribe (onNext: { [weak self] user in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self?.navigateToMessageViewController(with: user)
+                    let messageVC = MessageViewController(user: user)
+                    self?.navigationController?.pushViewController(messageVC, animated: true)
                 }
             }).disposed(by: bag)
         
-        
-        let contactsPageNavigationController = UINavigationController(rootViewController: contactsPage)
-        self.present(contactsPageNavigationController, animated: true)
     }
     
-    
-    func navigateToMessageViewController(with user: ContactModel) {
-        let messageVC = MessageViewController(user: user)
-        self.navigationController?.pushViewController(messageVC, animated: true)
-    }
-
-
 }
 

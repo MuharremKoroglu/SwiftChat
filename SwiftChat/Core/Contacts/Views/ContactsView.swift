@@ -13,7 +13,7 @@ class ContactsView: UIView {
     
     let viewModel: ContactsViewModel
     
-    var selectedUser = PublishSubject<ContactModel>()
+    let selectedUser = PublishSubject<ContactModel>()
     
     var contactSections: [ContactSection] = []
     
@@ -33,9 +33,9 @@ class ContactsView: UIView {
         return tableView
     }()
     
-    init(frame: CGRect, viewModel: ContactsViewModel) {
+    init(viewModel: ContactsViewModel) {
         self.viewModel = viewModel
-        super.init(frame: frame)
+        super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         setUpViews()
         setUpConstraints()
@@ -111,6 +111,7 @@ extension ContactsView : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedUser = contactSections[indexPath.section].contacts[indexPath.row]
         self.selectedUser.onNext(selectedUser)
+        tableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

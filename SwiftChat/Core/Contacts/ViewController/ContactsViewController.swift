@@ -14,12 +14,10 @@ class ContactsViewController: UIViewController {
     let selectedUser = PublishSubject<ContactModel>()
     
     private let searchController = UISearchController()
-    private let contactsView = ContactsView(
-        frame: .zero,
-        viewModel: ContactsViewModel()
-    )
     
     private let bag = DisposeBag()
+
+    private let contactsView = ContactsView(viewModel: ContactsViewModel())
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,7 +78,10 @@ private extension ContactsViewController {
     
     func setUpBindings() {
         
-        searchController.searchBar.rx.text
+        searchController
+            .searchBar
+            .rx
+            .text
             .orEmpty
             .distinctUntilChanged()
             .subscribe { [weak self] searchtext in

@@ -37,9 +37,9 @@ class SettingsViewModel {
                 userName.onNext(user.userName)
                 userEmail.onNext(user.userEmail)
                 
-                let result = await SCImageDownloaderManager.shared.downloadImage(imageUrl: user.profileImage)
+                let profileImageResult = await SCImageDownloaderManager.shared.downloadImage(imageUrl: user.profileImage)
                 
-                switch result {
+                switch profileImageResult {
                 case .success(let imageData):
                     guard let image = UIImage(data: imageData) else {return}
                     profileImage.onNext(image)

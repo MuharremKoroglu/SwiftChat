@@ -10,14 +10,12 @@ import UIKit
 class MessageView: UIView {
     
     let user : ContactModel
-
-    private let userNameLabel : CustomUILabel = {
-        let label = CustomUILabel(
-            labelText: "Test",
-            labelFont: .systemFont(ofSize: 15),
-            labelTextAlignment: .center
+    
+    let userProfileImage : CustomUIImageView = {
+        let image = CustomUIImageView(
+            isCircular: true
         )
-        return label
+        return image
     }()
     
     init(user : ContactModel) {
@@ -26,7 +24,8 @@ class MessageView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         setUpViews()
         setUpConstraints()
-        userNameLabel.text = user.name
+        setUpUserProfile()
+        
     }
     
     required init?(coder: NSCoder) {
@@ -40,7 +39,7 @@ private extension MessageView {
     func setUpViews() {
         
         addSubViews(
-            userNameLabel
+            userProfileImage
         )
         
     }
@@ -48,16 +47,33 @@ private extension MessageView {
     func setUpConstraints() {
         
         NSLayoutConstraint.activate([
-        
-            userNameLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            userNameLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            userNameLabel.widthAnchor.constraint(equalToConstant: 200),
-            userNameLabel.heightAnchor.constraint(equalToConstant: 50)
+            
+            userProfileImage.widthAnchor.constraint(equalToConstant: 40),
+            userProfileImage.heightAnchor.constraint(equalToConstant: 40)
         
         
         ])
         
         
+    }
+    
+    func setUpUserProfile() {
+        
+        Task {
+            
+            let result = await SCImageDownloaderManager.shared.downloadImage(imageUrl: user.profileImageURL)
+            
+            switch result {
+            case .success(let imageData):
+                guard let profileImage = UIImage(data: imageData) else {return}
+                userProfileImage.image = profileImage
+            case .failure(_):
+                guard let profileImage = UIImage(named: "anon_user") else {return}
+                userProfileImage.image = profileImage
+            }
+
+        }
+
     }
  
 }

@@ -19,42 +19,48 @@ class ContactsViewModel {
     private var contacts: [ContactModel] = []
     
     func fetchContacts() {
-        self.isFetching.onNext(true)
+        
+        isFetching.onNext(true)
         
         Task {
-            let response = await service.networkService(
+            
+            let fetchedFirebaseUsers = try await SCDatabaseManager.shared.readMultipleData(
+                collectionId: .users,
+                data: FirebaseUserModel.self
+            )
+            
+            let contactApiResponse = await self.service.networkService(
                 service: .contactsReuqest,
                 data: APIUsersModel.self
             )
             
-            do {
-                let registeredUsers = try await SCDatabaseManager.shared.readMultipleData(
-                    collectionId: .users,
-                    data: FirebaseUserModel.self
-                )
+            switch contactApiResponse {
+            case .success(let fetchedApiUsers):
                 
-                switch response {
-                case .success(let fetchedContacts):
-                    
-                    let apiUsers = fetchedContacts.results.map({ContactModel(from: $0)})
-                    
-                    let firebaseUsers = registeredUsers.map({ContactModel(from: $0)})
-                    
-                    contacts = apiUsers + firebaseUsers
-                    contacts.sort{$0.name < $1.name}
-                    
-                    let sections = self.groupContactsByLetter(contacts: contacts)
-                    self.filteredContacts.onNext(sections)
-                    self.isFetching.onNext(false)
-                case .failure(let error):
-                    self.isFetching.onNext(false)
-                    print(error)
-                }
-            }catch {
-                print("Kullanıcı verileri alınırken bir hata oluştu : \(error)")
+                let firebaseUsers = fetchedFirebaseUsers.map({ContactModel(from: $0)})
+                
+                let apiUsers = fetchedApiUsers.results.map({ContactModel(from: $0)})
+                
+                contacts = firebaseUsers + apiUsers
+                
+                contacts.sort{$0.name < $1.name}
+                
+                let sections = self.groupContactsByLetter(contacts: contacts)
+                
+                self.isFetching.onNext(false)
+                
+                self.filteredContacts.onNext(sections)
+                
+            case .failure(let error):
+                
+                self.isFetching.onNext(false)
+                
+                print("Api kullanıcıları getirilemedi : \(error)")
             }
             
+            
         }
+        
     }
     
 }

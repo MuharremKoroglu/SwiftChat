@@ -9,13 +9,13 @@ import UIKit
 
 class MessageViewController: UIViewController {
     
-    let user : ContactModel
+    private let user : ContactModel
     
-    private let messageView : MessageView
+    //private let messageView : MessageView
     
     init(user: ContactModel) {
         self.user = user
-        self.messageView = MessageView(user: user)
+        //self.messageView = MessageView(user: user)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -26,33 +26,46 @@ class MessageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        setUpView()
-        setUpContraints()
+//        setUpView()
+//        setUpContraints()
+        setUpNavigationBar()
     }
 
 }
 
 private extension MessageViewController {
     
-    func setUpView() {
-        
-        view.addSubViews(
-            messageView
-        )
-
-    }
+//    func setUpView() {
+//        
+//        view.addSubViews(
+//            messageView
+//        )
+//
+//    }
+//    
+//    func setUpContraints() {
+//        
+//        NSLayoutConstraint.activate([
+//        
+//            messageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+//            messageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+//            messageView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
+//            messageView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor)
+//
+//        ])
+// 
+//    }
     
-    func setUpContraints() {
+    func setUpNavigationBar() {
         
-        NSLayoutConstraint.activate([
+        navigationItem.largeTitleDisplayMode = .never
         
-            messageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            messageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            messageView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
-            messageView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor)
-
-        ])
- 
+        navigationItem.title = user.name
+//        let containerView = UIView()
+//        containerView.addSubViews(messageView.userProfileImage)
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: containerView)
+        
+        
     }
  
 }
