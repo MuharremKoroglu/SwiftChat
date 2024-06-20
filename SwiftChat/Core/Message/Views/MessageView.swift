@@ -11,12 +11,42 @@ class MessageView: UIView {
     
     let user : ContactModel
     
-    let userProfileImage : CustomUIImageView = {
-        let image = CustomUIImageView(
-            isCircular: true
+    private let addMediaButton : CustomUIButton = {
+        let button = CustomUIButton(
+            buttonImage: UIImage(systemName: "plus.circle.fill")
         )
-        return image
+        return button
     }()
+    
+    private let messageTextView : UITextView = {
+        let textView = UITextView()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.font = .systemFont(ofSize: 15)
+        textView.backgroundColor = .systemGray.withAlphaComponent(0.3)
+        textView.layer.cornerRadius = 10
+        textView.layer.masksToBounds = true
+        textView.isScrollEnabled = true
+        textView.isUserInteractionEnabled = true
+        return textView
+    }()
+    
+    private let sendMessageButton : CustomUIButton = {
+        let button = CustomUIButton(
+            buttonTitle: "Send",
+            buttonColor: .systemOrange
+        )
+        return button
+    }()
+    
+    private let messageStackView : CustomUIStackView = {
+        let stackView = CustomUIStackView(
+            stackAxis: .horizontal,
+            componentAlignment: .center,
+            componentSpacing: 10
+        )
+        return stackView
+    }()
+    
     
     init(user : ContactModel) {
         self.user = user
@@ -24,7 +54,6 @@ class MessageView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         setUpViews()
         setUpConstraints()
-        setUpUserProfile()
         
     }
     
@@ -39,8 +68,18 @@ private extension MessageView {
     func setUpViews() {
         
         addSubViews(
-            userProfileImage
+            messageStackView
         )
+        
+        messageStackView.addArrangedSubview(addMediaButton)
+        messageStackView.addArrangedSubview(messageTextView)
+        messageStackView.addArrangedSubview(sendMessageButton)
+        
+        addMediaButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        addMediaButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
+        messageTextView.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        messageTextView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         
     }
     
@@ -48,32 +87,25 @@ private extension MessageView {
         
         NSLayoutConstraint.activate([
             
-            userProfileImage.widthAnchor.constraint(equalToConstant: 40),
-            userProfileImage.heightAnchor.constraint(equalToConstant: 40)
+            messageStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            messageStackView.leadingAnchor.constraint(equalTo: leadingAnchor,constant: 5),
+            messageStackView.trailingAnchor.constraint(equalTo: trailingAnchor,constant: -5),
+            messageStackView.heightAnchor.constraint(equalToConstant: 40),
+            
+            addMediaButton.heightAnchor.constraint(equalTo: messageStackView.heightAnchor),
         
-        
+            messageTextView.heightAnchor.constraint(equalTo: messageStackView.heightAnchor),
+            
+            sendMessageButton.heightAnchor.constraint(equalTo: messageStackView.heightAnchor),
+            sendMessageButton.widthAnchor.constraint(equalTo: messageStackView.widthAnchor, multiplier: 0.18),
+            
+            
+            
         ])
         
         
     }
     
-    func setUpUserProfile() {
-        
-        Task {
-            
-            let result = await SCImageDownloaderManager.shared.downloadImage(imageUrl: user.profileImageURL)
-            
-            switch result {
-            case .success(let imageData):
-                guard let profileImage = UIImage(data: imageData) else {return}
-                userProfileImage.image = profileImage
-            case .failure(_):
-                guard let profileImage = UIImage(named: "anon_user") else {return}
-                userProfileImage.image = profileImage
-            }
-
-        }
-
-    }
- 
+    
+    
 }

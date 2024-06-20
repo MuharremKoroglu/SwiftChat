@@ -25,6 +25,8 @@
 		3B2FB3A32BF791AE0099EA65 /* ContactsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2FB3A22BF791AE0099EA65 /* ContactsViewModel.swift */; };
 		3B2FB3A62BF7CB680099EA65 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2FB3A52BF7CB680099EA65 /* RxCocoa */; };
 		3B2FB3A82BF7CB680099EA65 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2FB3A72BF7CB680099EA65 /* RxSwift */; };
+		3B3D38012C24675F00994380 /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D38002C24675F00994380 /* MessageModel.swift */; };
+		3B3D38032C2468BA00994380 /* MessagesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3D38022C2468BA00994380 /* MessagesTableViewCell.swift */; };
 		3B49CCD62BF61F720019323D /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCD52BF61F720019323D /* ContactsViewController.swift */; };
 		3B49CCDA2BF645800019323D /* ContactsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCD92BF645800019323D /* ContactsTableViewCell.swift */; };
 		3B49CCDC2BF646C70019323D /* SCImageDownloaderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49CCDB2BF646C70019323D /* SCImageDownloaderManager.swift */; };
@@ -80,6 +82,8 @@
 		3B2B052B2BF2390D007F6F52 /* ChannelsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsViewController.swift; sourceTree = "<group>"; };
 		3B2B052D2BF24C10007F6F52 /* SCTabBarRootController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCTabBarRootController.swift; sourceTree = "<group>"; };
 		3B2FB3A22BF791AE0099EA65 /* ContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewModel.swift; sourceTree = "<group>"; };
+		3B3D38002C24675F00994380 /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
+		3B3D38022C2468BA00994380 /* MessagesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesTableViewCell.swift; sourceTree = "<group>"; };
 		3B49CCD52BF61F720019323D /* ContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		3B49CCD92BF645800019323D /* ContactsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsTableViewCell.swift; sourceTree = "<group>"; };
 		3B49CCDB2BF646C70019323D /* SCImageDownloaderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCImageDownloaderManager.swift; sourceTree = "<group>"; };
@@ -278,6 +282,7 @@
 				3B51D1E02BF380E100145F77 /* APIUserRequestModel.swift */,
 				3BD74D3C2C15B8B1009399A3 /* FirebaseUserModel.swift */,
 				3B6A52072BFCA52D0082B2BE /* ContactSectionModel.swift */,
+				3B3D38002C24675F00994380 /* MessageModel.swift */,
 				3B2521A82C1B15B500174FCF /* DatabaseCollections.swift */,
 				3BD74D422C15E189009399A3 /* MediaStorageFolderNames.swift */,
 				3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */,
@@ -496,6 +501,7 @@
 			isa = PBXGroup;
 			children = (
 				3BDBF4062C1C1EAE00B468C9 /* MessageView.swift */,
+				3B3D38022C2468BA00994380 /* MessagesTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -624,6 +630,8 @@
 				3B51D1E32BF3815B00145F77 /* RequestService.swift in Sources */,
 				3B2155152C0E01050013501A /* SCAuthenticationManager.swift in Sources */,
 				3B2FB3A32BF791AE0099EA65 /* ContactsViewModel.swift in Sources */,
+				3B3D38032C2468BA00994380 /* MessagesTableViewCell.swift in Sources */,
+				3B3D38012C24675F00994380 /* MessageModel.swift in Sources */,
 				3B584FE02C04ADC4009BF4D9 /* SignInViewModel.swift in Sources */,
 				3BDBF4052C1C1E9500B468C9 /* MessageViewController.swift in Sources */,
 				3BDBF4072C1C1EAE00B468C9 /* MessageView.swift in Sources */,

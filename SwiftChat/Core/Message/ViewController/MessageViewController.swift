@@ -11,11 +11,18 @@ class MessageViewController: UIViewController {
     
     private let user : ContactModel
     
-    //private let messageView : MessageView
+    private let messageView : MessageView
+    
+    private let userProfileImage : CustomUIImageView = {
+        let image = CustomUIImageView(
+            isCircular: true
+        )
+        return image
+    }()
     
     init(user: ContactModel) {
         self.user = user
-        //self.messageView = MessageView(user: user)
+        self.messageView = MessageView(user: user)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -26,8 +33,9 @@ class MessageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-//        setUpView()
-//        setUpContraints()
+        setUpView()
+        setUpContraints()
+        setUpUserProfile()
         setUpNavigationBar()
     }
 
@@ -35,37 +43,57 @@ class MessageViewController: UIViewController {
 
 private extension MessageViewController {
     
-//    func setUpView() {
-//        
-//        view.addSubViews(
-//            messageView
-//        )
-//
-//    }
-//    
-//    func setUpContraints() {
-//        
-//        NSLayoutConstraint.activate([
-//        
-//            messageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-//            messageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-//            messageView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
-//            messageView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor)
-//
-//        ])
-// 
-//    }
+    func setUpView() {
+        
+        view.addSubViews(
+            messageView
+        )
+
+    }
+    
+    func setUpContraints() {
+        
+        NSLayoutConstraint.activate([
+            
+            messageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            messageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            messageView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
+            messageView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
+            
+            userProfileImage.widthAnchor.constraint(equalToConstant: 32),
+            userProfileImage.heightAnchor.constraint(equalToConstant: 32)
+            
+        ])
+        
+    }
     
     func setUpNavigationBar() {
         
         navigationItem.largeTitleDisplayMode = .never
         
         navigationItem.title = user.name
-//        let containerView = UIView()
-//        containerView.addSubViews(messageView.userProfileImage)
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: containerView)
+                        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: userProfileImage)
         
+    }
+    
+    func setUpUserProfile() {
         
+        Task {
+            
+            let result = await SCImageDownloaderManager.shared.downloadImage(imageUrl: user.profileImageURL)
+            
+            switch result {
+            case .success(let imageData):
+                guard let profileImage = UIImage(data: imageData) else {return}
+                userProfileImage.image = profileImage
+            case .failure(_):
+                guard let profileImage = UIImage(named: "anon_user") else {return}
+                userProfileImage.image = profileImage
+            }
+
+        }
+
     }
  
 }
