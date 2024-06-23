@@ -6,10 +6,26 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class MessageView: UIView {
     
     let user : ContactModel
+    
+    private let bag = DisposeBag()
+    
+    private var messages : [MessageModel] = []
+    
+    private let messagesTableView : UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.register(MessagesTableViewCell.self, forCellReuseIdentifier: MessagesTableViewCell.cellIdentifier)
+        tableView.showsVerticalScrollIndicator = false
+        tableView.separatorStyle = .none
+        tableView.allowsSelection = false
+        return tableView
+    }()
     
     private let addMediaButton : CustomUIButton = {
         let button = CustomUIButton(
@@ -52,8 +68,10 @@ class MessageView: UIView {
         self.user = user
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
+        setUpTableView()
         setUpViews()
         setUpConstraints()
+        setUpBindings()
         
     }
     
@@ -65,9 +83,15 @@ class MessageView: UIView {
 
 private extension MessageView {
     
+    func setUpTableView() {
+        messagesTableView.delegate = self
+        messagesTableView.dataSource = self
+    }
+    
     func setUpViews() {
         
         addSubViews(
+            messagesTableView,
             messageStackView
         )
         
@@ -86,6 +110,12 @@ private extension MessageView {
     func setUpConstraints() {
         
         NSLayoutConstraint.activate([
+            
+            messagesTableView.topAnchor.constraint(equalTo: topAnchor),
+            messagesTableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            messagesTableView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            messagesTableView.bottomAnchor.constraint(equalTo: messageStackView.topAnchor),
+            
             
             messageStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
             messageStackView.leadingAnchor.constraint(equalTo: leadingAnchor,constant: 5),
@@ -106,6 +136,45 @@ private extension MessageView {
         
     }
     
+    func setUpBindings() {
+        
+        
+        sendMessageButton
+            .rx
+            .tap
+            .bind { [weak self] in
+                let authenticatedUser = SCAuthenticationManager.shared.getAuthenticatedUser()
+                let message = MessageModel(
+                    senderId: authenticatedUser?.uid ?? "",
+                    receiverId: (self?.user.id)!,
+                    messageContent: (self?.messageTextView.text)!,
+                    messageDate: Date()
+                )
+                self?.messages.append(message)
+                self?.messagesTableView.reloadData()
+                self?.messageTextView.text = ""
+            }.disposed(by: bag)
+        
+        
+    }
+
+}
+
+extension MessageView : UITableViewDelegate, UITableViewDataSource {
     
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: MessagesTableViewCell.cellIdentifier,
+            for: indexPath
+        ) as? MessagesTableViewCell else {
+            fatalError("This cell not supported!")
+        }
+        cell.configure(with: messages[indexPath.row])
+        return cell
+    }
     
 }

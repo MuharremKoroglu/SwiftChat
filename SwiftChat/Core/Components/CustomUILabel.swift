@@ -10,16 +10,23 @@ import UIKit
 
 final class CustomUILabel : UILabel {
     
-    let labelText : String
-    let labelFont : UIFont
+    let labelText : String?
+    let labelFont : UIFont?
     let labelTextColor : UIColor?
-    let labelTextAlignment : NSTextAlignment
+    let labelTextAlignment : NSTextAlignment?
+    let labelNumberOfLines : Int?
     
-    init(labelText : String, labelFont : UIFont, labelTextColor : UIColor? = .label, labelTextAlignment : NSTextAlignment = .natural) {
+    init(labelText : String? = nil,
+         labelFont : UIFont? = nil,
+         labelTextColor : UIColor? = .label,
+         labelTextAlignment : NSTextAlignment = .natural,
+         labelNumberOfLines : Int? = 0
+    ) {
         self.labelText = labelText
         self.labelFont = labelFont
         self.labelTextColor = labelTextColor
         self.labelTextAlignment = labelTextAlignment
+        self.labelNumberOfLines = labelNumberOfLines
         super.init(frame: .zero)
         setUpLabel()
     }
@@ -34,7 +41,8 @@ final class CustomUILabel : UILabel {
         text = self.labelText
         font = self.labelFont
         textColor = self.labelTextColor
-        textAlignment = self.labelTextAlignment
+        textAlignment = self.labelTextAlignment!
+        numberOfLines = self.labelNumberOfLines!
         
         
     }

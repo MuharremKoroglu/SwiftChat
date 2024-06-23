@@ -121,7 +121,7 @@ extension ContactsView : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ContactsTableViewCell.cellIdentifier, for: indexPath) as! ContactsTableViewCell
         let contact = contactSections[indexPath.section].contacts[indexPath.row]
-        cell.configureCell(contact: contact)
+        cell.configure(with: contact)
         return cell
     }
     

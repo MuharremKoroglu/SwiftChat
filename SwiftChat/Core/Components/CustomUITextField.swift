@@ -34,6 +34,7 @@ final class CustomUITextField : UITextField {
         layer.cornerRadius = 20
         clearButtonMode = .whileEditing
         isSecureTextEntry = self.isSecure
+        autocapitalizationType = .none
         autocorrectionType = .no
         attributedPlaceholder = NSAttributedString(string: self.placeHolder)
         

@@ -59,7 +59,7 @@ class ContactsTableViewCell: UITableViewCell {
         contactProfileImage.layer.cornerRadius = contactProfileImage.frame.size.width / 2
     }
     
-    func configureCell (contact : ContactModel) {
+    func configure (with contact : ContactModel) {
         Task {
             let response = await SCImageDownloaderManager.shared.downloadImage(imageUrl: contact.profileImageURL)
             
@@ -79,7 +79,7 @@ class ContactsTableViewCell: UITableViewCell {
     
     private func setUpConstraints() {
         
-        addSubViews(
+        contentView.addSubViews(
             contactProfileImage,
             contactName,
             contactPhoneNumber)

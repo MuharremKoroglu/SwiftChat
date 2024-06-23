@@ -11,18 +11,17 @@ class MessagesTableViewCell: UITableViewCell {
     
     static let cellIdentifier = "MessagesTableViewCell"
     
-    private let messageLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
+    private let messageLabel: CustomUILabel = {
+        let label = CustomUILabel(
+            labelTextColor: .white
+        )
         return label
     }()
-    
-    private let messageBubble: UIView = {
+        
+    private let bubbleView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 15
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.masksToBounds = true
         return view
     }()
 
@@ -35,7 +34,7 @@ class MessagesTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
 }
 
 extension MessagesTableViewCell {
@@ -43,11 +42,13 @@ extension MessagesTableViewCell {
     func configure(with message: MessageModel) {
         messageLabel.text = message.messageContent
         if message.senderId == SCAuthenticationManager.shared.getAuthenticatedUser()?.uid {
-            messageBubble.backgroundColor = .systemOrange
-            messageBubble.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10).isActive = true
+            bubbleView.backgroundColor = .systemOrange
+            bubbleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10).isActive = true
+            bubbleView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 50).isActive = true
         } else {
-            messageBubble.backgroundColor = .systemGray.withAlphaComponent(0.2)
-            messageBubble.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10).isActive = true
+            bubbleView.backgroundColor = .systemGray.withAlphaComponent(0.2)
+            bubbleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10).isActive = true
+            bubbleView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -50).isActive = true
         }
     }
     
@@ -57,27 +58,25 @@ private extension MessagesTableViewCell {
     
     func setUpViews() {
         
-        addSubViews(
-            messageLabel,
-            messageBubble
-        )
+        contentView.addSubview(bubbleView)
+        bubbleView.addSubview(messageLabel)
         
     }
     
     func setUpConstraints() {
         
         NSLayoutConstraint.activate([
-            messageBubble.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            messageBubble.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            messageBubble.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor, multiplier: 0.75),
+            bubbleView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            bubbleView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            bubbleView.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor, multiplier: 0.75),
             
-            messageLabel.topAnchor.constraint(equalTo: messageBubble.topAnchor, constant: 10),
-            messageLabel.bottomAnchor.constraint(equalTo: messageBubble.bottomAnchor, constant: -10),
-            messageLabel.leadingAnchor.constraint(equalTo: messageBubble.leadingAnchor, constant: 10),
-            messageLabel.trailingAnchor.constraint(equalTo: messageBubble.trailingAnchor, constant: -10),
+            messageLabel.topAnchor.constraint(equalTo: bubbleView.topAnchor, constant: 10),
+            messageLabel.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -10),
+            messageLabel.leadingAnchor.constraint(equalTo: bubbleView.leadingAnchor, constant: 10),
+            messageLabel.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor, constant: -10)
         ])
         
     }
-    
-    
 }
+
+

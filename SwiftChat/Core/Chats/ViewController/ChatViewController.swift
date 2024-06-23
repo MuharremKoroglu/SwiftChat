@@ -56,6 +56,7 @@ private extension ChatViewController {
             .subscribe (onNext: { [weak self] user in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     let messageVC = MessageViewController(user: user)
+                    messageVC.hidesBottomBarWhenPushed = true
                     self?.navigationController?.pushViewController(messageVC, animated: true)
                 }
             }).disposed(by: bag)
