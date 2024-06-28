@@ -13,6 +13,8 @@ class MessageView: UIView {
     
     let user : ContactModel
     
+    let viewModel : MessageViewModel
+    
     private let bag = DisposeBag()
     
     private var messages : [MessageModel] = []
@@ -64,8 +66,9 @@ class MessageView: UIView {
     }()
     
     
-    init(user : ContactModel) {
+    init(user : ContactModel, viewModel : MessageViewModel) {
         self.user = user
+        self.viewModel = viewModel
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         setUpTableView()
@@ -142,17 +145,13 @@ private extension MessageView {
         sendMessageButton
             .rx
             .tap
-            .bind { [weak self] in
-                let authenticatedUser = SCAuthenticationManager.shared.getAuthenticatedUser()
-                let message = MessageModel(
-                    senderId: authenticatedUser?.uid ?? "",
-                    receiverId: (self?.user.id)!,
-                    messageContent: (self?.messageTextView.text)!,
-                    messageDate: Date()
+            .bind { _ in
+                self.viewModel.sendMessage(
+                    user: self.user,
+                    message: self.messageTextView.text
                 )
-                self?.messages.append(message)
-                self?.messagesTableView.reloadData()
-                self?.messageTextView.text = ""
+                self.messagesTableView.reloadData()
+                self.messageTextView.text = ""
             }.disposed(by: bag)
         
         

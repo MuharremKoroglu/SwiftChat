@@ -22,15 +22,22 @@ final class SCDatabaseManager {
         
     }
     
-    private func getDocumentReference (collectionId : DatabaseCollections, documentId : String) -> DocumentReference {
+    private func getDocumentReference (collectionId : DatabaseCollections, documentId : String, secondDocumentId : String? = nil) -> DocumentReference {
         
-        return getCollectionReference(collection: .users).document(documentId)
+        if collectionId == .messages {
+           return getCollectionReference(collection: collectionId)
+                .document(documentId)
+                .collection(secondDocumentId ?? "")
+                .document()
+        }
+        
+        return getCollectionReference(collection: collectionId).document(documentId)
         
     }
     
-    func createData <T : Encodable> (collectionId : DatabaseCollections, documentId : String, data : T) async throws {
+    func createData <T : Encodable> (collectionId : DatabaseCollections, documentId : String, secondDocumentId : String? = nil ,data : T) async throws {
         
-        try getDocumentReference(collectionId: collectionId, documentId: documentId).setData(from: data, merge: false)
+        try getDocumentReference(collectionId: collectionId, documentId: documentId,secondDocumentId: secondDocumentId).setData(from: data, merge: false)
         
     }
     
