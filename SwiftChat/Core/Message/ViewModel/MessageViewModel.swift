@@ -6,17 +6,24 @@
 //
 
 import Foundation
+import FirebaseFirestore
 import RxSwift
 import RxCocoa
 
+@MainActor
 class MessageViewModel {
     
+    let messages = BehaviorSubject<[MessageModel]>(value: [])
     
+    let user: ContactModel
     
-    func sendMessage(user : ContactModel, message : String) {
-        
+    init(user: ContactModel) {
+        self.user = user
+        fetchMessages()
+    }
+    
+    func sendMessage(message: String) {
         Task {
-            
             do {
                 guard let senderId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
                     return
@@ -38,17 +45,45 @@ class MessageViewModel {
                     data: message
                 )
                 
-            }catch {
-                print("Mesaj kaydında hata : \(error)")
+                try await SCDatabaseManager.shared.createData(
+                    collectionId: .messages,
+                    documentId: receiverId,
+                    secondDocumentId: senderId,
+                    data: message
+                )
+                
+            } catch {
+                print("Mesaj kaydında hata: \(error)")
             }
-
         }
-
     }
     
-    
-    
-    
-    
-    
+    func fetchMessages() {
+        guard let senderId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
+            return
+        }
+        
+        let receiverId = user.id
+        
+        SCDatabaseManager.shared.addListener(
+            collectionId: .messages,
+            documentId: senderId,
+            secondCollectionId: receiverId,
+            data: MessageModel.self, 
+            query: MessageModel.CodingKeys.messageDate.rawValue) { result in
+                switch result {
+                case .success(let newMessages):
+                    do {
+                        var currentMessages = try self.messages.value()
+                        currentMessages.append(contentsOf: newMessages)
+                        self.messages.onNext(currentMessages)
+                    } catch {
+                        print("Mesajları güncellemede hata: \(error)")
+                    }
+                case .failure(let error):
+                    print("Mesaj dinleme başarısız: \(error)")
+                }
+            }
+    }
 }
+

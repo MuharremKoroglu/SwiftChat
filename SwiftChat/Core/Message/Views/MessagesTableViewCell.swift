@@ -12,9 +12,8 @@ class MessagesTableViewCell: UITableViewCell {
     static let cellIdentifier = "MessagesTableViewCell"
     
     private let messageLabel: CustomUILabel = {
-        let label = CustomUILabel(
-            labelTextColor: .white
-        )
+        let label = CustomUILabel(labelTextColor: .label)
+        label.numberOfLines = 0
         return label
     }()
         
@@ -24,6 +23,9 @@ class MessagesTableViewCell: UITableViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    
+    private var leadingConstraint: NSLayoutConstraint!
+    private var trailingConstraint: NSLayoutConstraint!
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -41,18 +43,10 @@ extension MessagesTableViewCell {
     
     func configure(with message: MessageModel) {
         messageLabel.text = message.messageContent
-        if message.senderId == SCAuthenticationManager.shared.getAuthenticatedUser()?.uid {
-            bubbleView.backgroundColor = .systemOrange
-            bubbleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10).isActive = true
-            bubbleView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 50).isActive = true
-        } else {
-            bubbleView.backgroundColor = .systemGray.withAlphaComponent(0.2)
-            bubbleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10).isActive = true
-            bubbleView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -50).isActive = true
-        }
+        updateConstraints(for: message)
     }
-    
 }
+
 
 private extension MessagesTableViewCell {
     
@@ -66,17 +60,35 @@ private extension MessagesTableViewCell {
     func setUpConstraints() {
         
         NSLayoutConstraint.activate([
-            bubbleView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            bubbleView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            bubbleView.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor, multiplier: 0.75),
+            messageLabel.topAnchor.constraint(equalTo: bubbleView.topAnchor, constant: 12),
+            messageLabel.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -12),
+            messageLabel.leadingAnchor.constraint(equalTo: bubbleView.leadingAnchor, constant: 12),
+            messageLabel.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor, constant: -12),
             
-            messageLabel.topAnchor.constraint(equalTo: bubbleView.topAnchor, constant: 10),
-            messageLabel.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -10),
-            messageLabel.leadingAnchor.constraint(equalTo: bubbleView.leadingAnchor, constant: 10),
-            messageLabel.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor, constant: -10)
+            bubbleView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            bubbleView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            bubbleView.widthAnchor.constraint(lessThanOrEqualToConstant: 250)
         ])
         
+        leadingConstraint = bubbleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15)
+        trailingConstraint = bubbleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
+    
     }
+    
+    func updateConstraints(for message: MessageModel) {
+        if message.senderId == SCAuthenticationManager.shared.getAuthenticatedUser()?.uid {
+            bubbleView.backgroundColor = .systemOrange
+            leadingConstraint.isActive = false
+            trailingConstraint.isActive = true
+        } else {
+            bubbleView.backgroundColor = .systemGray.withAlphaComponent(0.3)
+            trailingConstraint.isActive = false
+            leadingConstraint.isActive = true
+        }
+        
+
+    }
+    
 }
 
 

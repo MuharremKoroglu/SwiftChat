@@ -79,4 +79,39 @@ final class SCDatabaseManager {
         
     }
     
+    func addListener<T: Decodable>(collectionId: DatabaseCollections, documentId: String, secondCollectionId: String, data: T.Type, query: String? = nil,completion: @escaping (Result<[T], Error>) -> Void) {
+        
+        var collectionReference : Query = getCollectionReference(collection: collectionId).document(documentId).collection(secondCollectionId)
+        
+        if let query = query {
+            collectionReference = collectionReference.order(by: query)
+        }
+        
+        collectionReference.addSnapshotListener { snapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let snapshot = snapshot else {
+                completion(.failure(NSError(domain: "Firestore", code: -1, userInfo: [NSLocalizedDescriptionKey: "No snapshot data"])))
+                return
+            }
+            
+            do {
+                let models: [T] = try snapshot.documentChanges.compactMap { change in
+                    if change.type == .added {
+                        return try change.document.data(as: data.self)
+                    }
+                    return nil
+                }
+                completion(.success(models))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+
+    
 }

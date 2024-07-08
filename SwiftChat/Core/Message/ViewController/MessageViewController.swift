@@ -22,7 +22,7 @@ class MessageViewController: UIViewController {
     
     init(user: ContactModel) {
         self.user = user
-        self.messageView = MessageView(user: user, viewModel: MessageViewModel())
+        self.messageView = MessageView(user: user, viewModel: MessageViewModel(user: user))
         super.init(nibName: nil, bundle: nil)
     }
     

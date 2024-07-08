@@ -75,6 +75,7 @@ class MessageView: UIView {
         setUpViews()
         setUpConstraints()
         setUpBindings()
+        scrollToBottom()
         
     }
     
@@ -141,20 +142,37 @@ private extension MessageView {
     
     func setUpBindings() {
         
+        viewModel
+            .messages
+            .subscribe(onNext: { [weak self] messages in
+                self?.messages = messages
+                self?.messagesTableView.reloadData()
+                self?.scrollToBottom()
+            })
+            .disposed(by: bag)
+        
         
         sendMessageButton
             .rx
             .tap
-            .bind { _ in
+            .bind { [weak self] _ in
+                guard let self = self else { return }
                 self.viewModel.sendMessage(
-                    user: self.user,
                     message: self.messageTextView.text
                 )
-                self.messagesTableView.reloadData()
                 self.messageTextView.text = ""
-            }.disposed(by: bag)
+            }
+            .disposed(by: bag)
         
         
+    }
+    
+    func scrollToBottom() {
+        guard !messages.isEmpty else { return }
+        DispatchQueue.main.async {
+            let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+            self.messagesTableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+        }
     }
 
 }
