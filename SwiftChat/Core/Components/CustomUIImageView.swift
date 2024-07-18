@@ -11,9 +11,22 @@ import UIKit
 class CustomUIImageView : UIImageView {
     
     let isCircular : Bool
+    let cornerRadius : CGFloat
+    let imageMode : UIView.ContentMode
+    let clipImageBound : Bool
+    let maskImageBound : Bool
     
-    init(isCircular : Bool = false) {
+    init(isCircular : Bool = false, 
+         cornerRadius : CGFloat = 0,
+         imageMode : UIView.ContentMode = .scaleAspectFit,
+         clipImageBound : Bool = false,
+         maskImageBound : Bool = false
+    ) {
         self.isCircular = isCircular
+        self.cornerRadius = cornerRadius
+        self.imageMode = imageMode
+        self.clipImageBound = clipImageBound
+        self.maskImageBound = maskImageBound
         super.init(frame: .zero)
         setUpImageView()
     }
@@ -27,15 +40,17 @@ class CustomUIImageView : UIImageView {
             layer.cornerRadius = frame.size.width / 2
             clipsToBounds = true
         } else {
-            layer.cornerRadius = 0
-            clipsToBounds = false
+            layer.cornerRadius = self.cornerRadius
+            layer.masksToBounds = maskImageBound
+            clipsToBounds = clipImageBound
+            
         }
     }
     
     private func setUpImageView () {
         
         translatesAutoresizingMaskIntoConstraints = false
-        contentMode = .scaleAspectFit
+        contentMode = imageMode
     }
     
 }

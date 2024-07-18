@@ -6,12 +6,18 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class MessageViewController: UIViewController {
     
     private let user : ContactModel
     
     private let messageView : MessageView
+    
+    private let viewModel : MessageViewModel
+    
+    private let bag = DisposeBag()
     
     private let userProfileImage : CustomUIImageView = {
         let image = CustomUIImageView(
@@ -22,7 +28,8 @@ class MessageViewController: UIViewController {
     
     init(user: ContactModel) {
         self.user = user
-        self.messageView = MessageView(user: user, viewModel: MessageViewModel(user: user))
+        self.viewModel = MessageViewModel(user: user)
+        self.messageView = MessageView(viewModel: viewModel)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -37,6 +44,7 @@ class MessageViewController: UIViewController {
         setUpContraints()
         setUpUserProfile()
         setUpNavigationBar()
+        setUpBindings()
     }
 
 }
@@ -95,5 +103,79 @@ private extension MessageViewController {
         }
 
     }
+    
+    func setUpBindings() {
+        
+        messageView.addMediaButtonTapped
+            .subscribe(onNext: { [weak self] _ in
+                self?.presentActionSheet()
+            })
+            .disposed(by: bag)
+    }
+    
+    func presentActionSheet() {
+        
+        let actionSheet = UIAlertController(
+            title: "Send Media",
+            message: "Where would you like to use it?",
+            preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "Camera", style: .default, handler: { [weak self] _ in
+            self?.pickImage(with: .camera)
+            
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: { [weak self] _ in
+            self?.pickImage(with: .photoLibrary)
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(actionSheet, animated: true)
+        
+    }
+    
+    func pickImage(with sourceType : UIImagePickerController.SourceType) {
+        let picker = UIImagePickerController()
+        picker.sourceType = sourceType
+        picker.delegate = self
+        picker.allowsEditing = true
+        present(picker, animated: true)
+    }
  
+}
+
+extension MessageViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        picker.dismiss(animated: true)
+        
+        guard let image = info[.editedImage] as? UIImage,
+        let compressedImage = image.jpegData(compressionQuality: 1) else {
+            return
+        }
+        
+        Task {
+            
+            guard let senderId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
+                return
+            }
+            
+            let imageUrl = try await SCMediaStorageManager.shared.uploadData(
+                folderName: .messageMedia,
+                fileName: senderId,
+                secondFileName: UUID().uuidString,
+                data: compressedImage
+            )
+            
+            viewModel.sendMessage(
+                message: imageUrl.absoluteString,
+                messageType: .media
+            )
+        }
+
+        
+    }
+    
 }

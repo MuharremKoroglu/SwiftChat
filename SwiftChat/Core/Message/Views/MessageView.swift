@@ -10,10 +10,10 @@ import RxSwift
 import RxCocoa
 
 class MessageView: UIView {
-    
-    let user : ContactModel
-    
+        
     let viewModel : MessageViewModel
+    
+    let addMediaButtonTapped = PublishSubject<Bool>()
     
     private let bag = DisposeBag()
     
@@ -66,8 +66,7 @@ class MessageView: UIView {
     }()
     
     
-    init(user : ContactModel, viewModel : MessageViewModel) {
-        self.user = user
+    init(viewModel : MessageViewModel) {
         self.viewModel = viewModel
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
@@ -133,8 +132,6 @@ private extension MessageView {
             sendMessageButton.heightAnchor.constraint(equalTo: messageStackView.heightAnchor),
             sendMessageButton.widthAnchor.constraint(equalTo: messageStackView.widthAnchor, multiplier: 0.18),
             
-            
-            
         ])
         
         
@@ -158,12 +155,14 @@ private extension MessageView {
             .bind { [weak self] _ in
                 guard let self = self else { return }
                 self.viewModel.sendMessage(
-                    message: self.messageTextView.text
+                    message: self.messageTextView.text,
+                    messageType: .text
                 )
                 self.messageTextView.text = ""
             }
             .disposed(by: bag)
         
+        addMediaButton.addTarget(self,action: #selector(addMediaButtonClicked), for: .touchUpInside)
         
     }
     
@@ -173,6 +172,10 @@ private extension MessageView {
             let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
             self.messagesTableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
+    }
+    
+    @objc func addMediaButtonClicked(){
+        self.addMediaButtonTapped.onNext(true)
     }
 
 }

@@ -15,9 +15,12 @@ class ChatViewController: UIViewController {
     
     private let bag = DisposeBag()
     
+    private let chatView = ChatView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        setUpViews ()
         contactsPageButton()
         setUpBindings()
     }
@@ -26,6 +29,22 @@ class ChatViewController: UIViewController {
 }
 
 private extension ChatViewController {
+    
+    
+    func setUpViews () {
+        
+        view.addSubViews(chatView)
+        
+        
+        NSLayoutConstraint.activate([
+            
+            chatView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            chatView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            chatView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
+            chatView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
+            
+        ])
+    }
     
     
     func contactsPageButton() {

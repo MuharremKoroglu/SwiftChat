@@ -22,7 +22,7 @@ class MessageViewModel {
         fetchMessages()
     }
     
-    func sendMessage(message: String) {
+    func sendMessage(message: String, messageType : MessageType) {
         Task {
             do {
                 guard let senderId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
@@ -35,7 +35,8 @@ class MessageViewModel {
                     senderId: senderId,
                     receiverId: receiverId,
                     messageContent: message,
-                    messageDate: Date()
+                    messageDate: Date(), 
+                    messageType: messageType
                 )
                 
                 try await SCDatabaseManager.shared.createData(

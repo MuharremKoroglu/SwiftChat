@@ -10,6 +10,6 @@ import Foundation
 enum MediaStorageFolderNames : String {
     
     case profilePictures = "user_profiles"
-
+    case messageMedia = "message_media"
     
 }
