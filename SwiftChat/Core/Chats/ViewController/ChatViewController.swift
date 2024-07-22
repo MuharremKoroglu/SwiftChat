@@ -15,7 +15,7 @@ class ChatViewController: UIViewController {
     
     private let bag = DisposeBag()
     
-    private let chatView = ChatView()
+    private let chatView = ChatView(viewModel: ChatsViewModel())
     
     override func viewDidLoad() {
         super.viewDidLoad()

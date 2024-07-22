@@ -42,14 +42,14 @@ class MessageViewModel {
                 try await SCDatabaseManager.shared.createData(
                     collectionId: .messages,
                     documentId: senderId,
-                    secondDocumentId: receiverId,
+                    secondCollectionId: receiverId,
                     data: message
                 )
                 
                 try await SCDatabaseManager.shared.createData(
                     collectionId: .messages,
                     documentId: receiverId,
-                    secondDocumentId: senderId,
+                    secondCollectionId: senderId,
                     data: message
                 )
                 
@@ -78,6 +78,8 @@ class MessageViewModel {
                         var currentMessages = try self.messages.value()
                         currentMessages.append(contentsOf: newMessages)
                         self.messages.onNext(currentMessages)
+                        guard let lastMessage = currentMessages.last else {return}
+                        self.saveRecentMessage(with: lastMessage)
                     } catch {
                         print("Mesajları güncellemede hata: \(error)")
                     }
@@ -85,6 +87,42 @@ class MessageViewModel {
                     print("Mesaj dinleme başarısız: \(error)")
                 }
             }
+    }
+    
+    private func saveRecentMessage(with message : MessageModel) {
+        
+        Task {
+            
+            guard let senderId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
+                return
+            }
+            
+            let receiverId = user.id
+            
+            do {
+                
+                try await SCDatabaseManager.shared.createData(
+                    collectionId: .mainRecentMessages,
+                    documentId: senderId,
+                    secondCollectionId: DatabaseCollections.subRecentMessage.rawValue,
+                    secondDocumentId: receiverId,
+                    data: message
+                )
+                
+                try await SCDatabaseManager.shared.createData(
+                    collectionId: .mainRecentMessages,
+                    documentId: receiverId,
+                    secondCollectionId: DatabaseCollections.subRecentMessage.rawValue,
+                    secondDocumentId: senderId,
+                    data: message
+                )
+                
+            }catch {
+                print("Son mesaj kaydı yapılamadı : \(error)")
+            }
+            
+        }
+        
     }
 }
 

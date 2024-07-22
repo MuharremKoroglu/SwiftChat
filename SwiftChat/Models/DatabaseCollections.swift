@@ -11,6 +11,8 @@ enum DatabaseCollections : String {
     
     case users = "Users"
     case messages = "Messages"
+    case mainRecentMessages = "Recent_Messages"
+    case subRecentMessage = "recent_message"
     
     
 }

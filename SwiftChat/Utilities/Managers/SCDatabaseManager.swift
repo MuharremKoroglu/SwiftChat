@@ -22,22 +22,30 @@ final class SCDatabaseManager {
         
     }
     
-    private func getDocumentReference (collectionId : DatabaseCollections, documentId : String, secondDocumentId : String? = nil) -> DocumentReference {
+    private func getDocumentReference (collectionId : DatabaseCollections, documentId : String, secondCollectionId : String? = nil, secondDocumentId : String? = nil) -> DocumentReference {
         
-        if collectionId == .messages {
-           return getCollectionReference(collection: collectionId)
-                .document(documentId)
-                .collection(secondDocumentId ?? "")
-                .document()
+        var documentReference = getCollectionReference(collection: collectionId).document(documentId)
+        
+        if let secondCollectionId = secondCollectionId {
+            if let secondDocumentId = secondDocumentId {
+                documentReference = documentReference.collection(secondCollectionId).document(secondDocumentId)
+            } else {
+                documentReference = documentReference.collection(secondCollectionId).document()
+            }
         }
         
-        return getCollectionReference(collection: collectionId).document(documentId)
+        return documentReference
         
     }
     
-    func createData <T : Encodable> (collectionId : DatabaseCollections, documentId : String, secondDocumentId : String? = nil ,data : T) async throws {
+    func createData <T : Encodable> (collectionId : DatabaseCollections, documentId : String, secondCollectionId : String? = nil, secondDocumentId : String? = nil ,data : T) async throws {
         
-        try getDocumentReference(collectionId: collectionId, documentId: documentId,secondDocumentId: secondDocumentId).setData(from: data, merge: false)
+        try getDocumentReference(
+            collectionId: collectionId,
+            documentId: documentId,
+            secondCollectionId: secondCollectionId,
+            secondDocumentId: secondDocumentId)
+        .setData(from: data, merge: false)
         
     }
     
@@ -47,9 +55,15 @@ final class SCDatabaseManager {
         
     }
     
-    func readMultipleData <T : Decodable> (collectionId : DatabaseCollections, data : T.Type) async throws -> [T]{
+    func readMultipleData <T : Decodable> (collectionId : DatabaseCollections, query : [String] = [], data : T.Type) async throws -> [T]{
         
-        let snapshot = try await getCollectionReference(collection: collectionId).getDocuments()
+        let snapshot: QuerySnapshot
+        
+        if !query.isEmpty {
+            snapshot = try await getCollectionReference(collection: collectionId).whereField(FieldPath.documentID(), in: query).getDocuments()
+        } else {
+            snapshot = try await getCollectionReference(collection: collectionId).getDocuments()
+        }
         
         var dataModels: [T] = []
         for document in snapshot.documents {
@@ -79,15 +93,22 @@ final class SCDatabaseManager {
         
     }
     
-    func addListener<T: Decodable>(collectionId: DatabaseCollections, documentId: String, secondCollectionId: String, data: T.Type, query: String? = nil,completion: @escaping (Result<[T], Error>) -> Void) {
+    func addListener<T: Decodable>(collectionId: DatabaseCollections, documentId: String? = nil, secondCollectionId: String? = nil, data: T.Type, query: String? = nil, completion: @escaping (Result<[T], Error>) -> Void) {
         
-        var collectionReference : Query = getCollectionReference(collection: collectionId).document(documentId).collection(secondCollectionId)
+        let collectionReference: CollectionReference = getCollectionReference(collection: collectionId)
+        var queryReference: Query = collectionReference
         
-        if let query = query {
-            collectionReference = collectionReference.order(by: query)
+        if let documentId = documentId, let secondCollectionId = secondCollectionId {
+            queryReference = collectionReference.document(documentId).collection(secondCollectionId)
+        } else if let documentId = documentId {
+            queryReference = collectionReference.document(documentId).collection("")
         }
         
-        collectionReference.addSnapshotListener { snapshot, error in
+        if let query = query {
+            queryReference = queryReference.order(by: query)
+        }
+        
+        queryReference.addSnapshotListener { snapshot, error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -111,6 +132,7 @@ final class SCDatabaseManager {
             }
         }
     }
+
 
 
     

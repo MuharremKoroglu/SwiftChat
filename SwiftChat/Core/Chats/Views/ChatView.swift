@@ -6,56 +6,99 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class ChatView: UIView {
-
-    private let bubble : UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemBlue
-        view.layer.cornerRadius = 15
-        view.clipsToBounds = true
-        view.layer.masksToBounds = true
-        return view
+    
+    let viewModel : ChatsViewModel
+    
+    private let bag = DisposeBag()
+    
+    private var recentMessages : [RecentMessageModel] = []
+    
+    private let chatsTableView : UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.register(ChatsTableViewCell.self, forCellReuseIdentifier: ChatsTableViewCell.cellIdentifier)
+        tableView.showsVerticalScrollIndicator = false
+        tableView.rowHeight = 70
+        return tableView
     }()
     
-    private let imageView : UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(systemName: "pencil.circle.fill")
-        imageView.layer.cornerRadius = 15
-        imageView.clipsToBounds = true
-        imageView.layer.masksToBounds = true
-        return imageView
-    }()
-    
-    init() {
+    init(viewModel : ChatsViewModel) {
+        self.viewModel = viewModel
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
-        setUpView()
+        setUpViews()
+        setUpConstraints()
+        setUpTableView()
+        setUpBindings()
+        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setUpView() {
-        addSubview(bubble)
-        bubble.addSubview(imageView)
+}
+
+private extension ChatView {
+    
+    
+    func setUpViews() {
+        
+        addSubViews(
+            chatsTableView
+        )
+    }
+    
+    
+    func setUpConstraints() {
         
         NSLayoutConstraint.activate([
             
-            bubble.topAnchor.constraint(equalTo: topAnchor, constant: 100),
-            bubble.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -100),
-            bubble.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
-            bubble.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30),
-
+            chatsTableView.topAnchor.constraint(equalTo: topAnchor),
+            chatsTableView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            chatsTableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            chatsTableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             
-            imageView.topAnchor.constraint(equalTo: bubble.topAnchor, constant: 10),
-            imageView.bottomAnchor.constraint(equalTo: bubble.bottomAnchor, constant: -10),
-            imageView.leadingAnchor.constraint(equalTo: bubble.leadingAnchor, constant: 10),
-            imageView.trailingAnchor.constraint(equalTo: bubble.trailingAnchor, constant: -10),
         ])
+    }
+    
+    func setUpTableView() {
+        chatsTableView.delegate = self
+        chatsTableView.dataSource = self
+    }
+    
+    func setUpBindings () {
+        
+        viewModel
+            .recentMessages
+            .subscribe(onNext: { [weak self] recentMessages in
+                self?.recentMessages = recentMessages
+                print("Son mesajlar : \(recentMessages)")
+                self?.chatsTableView.reloadData()
+            }).disposed(by: bag)
+
+    }
+}
+
+extension ChatView : UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return recentMessages.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: ChatsTableViewCell.cellIdentifier,
+            for: indexPath
+        ) as? ChatsTableViewCell else {
+            fatalError("This cell not supported!")
+        }
+        cell.configure(with: recentMessages[indexPath.row])
+        return cell
     }
     
 }
