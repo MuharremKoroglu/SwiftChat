@@ -14,32 +14,68 @@ class ChatsViewModel {
     
     let recentMessages = BehaviorSubject<[RecentMessageModel]>(value: [])
     
+    private var authenticatedUserId : String {
+        guard let userId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
+            return ""
+        }
+        
+        return userId
+    }
+    
     init() {
         fetchRecentMessages()
     }
     
     
     func fetchRecentMessages() {
-        
-        guard let senderId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
-            return
-        }
                 
         SCDatabaseManager.shared.addListener(
             collectionId: .mainRecentMessages,
-            documentId: senderId,
+            documentId: authenticatedUserId,
             secondCollectionId: DatabaseCollections.subRecentMessage.rawValue,
             data: MessageModel.self,
             query: MessageModel.CodingKeys.messageDate.rawValue) { result in
                 switch result {
                 case .success(let newMessages):
-                    print("Firebase mesajları : \(newMessages)")
                     self.fetchUserData(with: newMessages)
                 case .failure(let error):
                     print("Mesaj dinleme başarısız: \(error)")
                 }
             }
     
+    }
+
+    func deleteRecentMessage(with message : RecentMessageModel) {
+        
+        Task {
+            
+            do {
+                
+                var recentMessages = try recentMessages.value()
+                
+                recentMessages.removeAll { $0.receiverProfile.id == message.receiverProfile.id }
+                
+                self.recentMessages.onNext(recentMessages)
+                
+                try await SCDatabaseManager.shared.deleteSingleData(
+                    collectionId: .mainRecentMessages,
+                    documentId: authenticatedUserId,
+                    secondCollectionId: DatabaseCollections.subRecentMessage.rawValue,
+                    secondDocumentId: message.receiverProfile.id
+                )
+                
+                try await SCDatabaseManager.shared.deleteMultipleData(
+                    collectionId: .messages,
+                    documentId: authenticatedUserId,
+                    secondCollectionId: message.receiverProfile.id
+                )
+                
+            }catch {
+                print("Son mesaj silinemedi : \(error)")
+            }
+ 
+        }
+        
     }
     
     
@@ -52,33 +88,34 @@ class ChatsViewModel {
                     return
                 }
                 
-                var userIds = messages.map { $0.receiverId }
-                
-                if let index = userIds.firstIndex(of: authenticatedUserId) {
-                    userIds[index] = messages[index].senderId
+                let userIds = messages.compactMap { message in
+                    message.receiverId == authenticatedUserId ? message.senderId : message.receiverId
                 }
                 
-                print("KULLANICI IDLERİ : \(userIds)")
-                                
-                let users = try await SCDatabaseManager.shared.readMultipleData(
+                let firebaseUsers = try await SCDatabaseManager.shared.readMultipleData(
                     collectionId: .users,
                     query: userIds,
                     data: FirebaseUserModel.self
                 )
                 
+                let contacts = firebaseUsers.compactMap { user in
+                    return ContactModel(from: user)
+                }
+                
                 let chatMessages = messages.compactMap { message -> RecentMessageModel? in
-                    guard let user = users.first(where: { $0.userId == message.receiverId || $0.userId == message.senderId}) else {
+                    guard let contact = contacts.first(where: {$0.id == message.receiverId || $0.id == message.senderId}) else {
                         print("Bu id ile ilişkili kullanıcı bulunamadı.")
                         return nil
                     }
                     
-                    return RecentMessageModel(
-                        userProfileImage: user.profileImage,
-                        userName: user.userName,
+                    let recentMessage = RecentMessageModel(
+                        receiverProfile: contact,
                         recentMessageContent: message.messageContent,
                         recentMessageType: message.messageType,
-                        recentDate: message.messageDate
+                        recentMessageDate: message.messageDate
                     )
+                    
+                    return recentMessage
                 }
                 
                 var currentMessages = try self.recentMessages.value()

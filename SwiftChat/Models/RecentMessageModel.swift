@@ -9,11 +9,9 @@ import Foundation
 
 struct RecentMessageModel {
     
-    let userProfileImage : URL
-    let userName : String
+    let receiverProfile : ContactModel
     let recentMessageContent : String
     let recentMessageType : MessageType
-    let recentDate : Date
-    
+    let recentMessageDate : Date
     
 }

@@ -15,18 +15,25 @@ class CustomUIImageView : UIImageView {
     let imageMode : UIView.ContentMode
     let clipImageBound : Bool
     let maskImageBound : Bool
+    let selectedImage : UIImage?
+    let imageTintColor : UIColor?
+    
     
     init(isCircular : Bool = false, 
          cornerRadius : CGFloat = 0,
          imageMode : UIView.ContentMode = .scaleAspectFit,
          clipImageBound : Bool = false,
-         maskImageBound : Bool = false
+         maskImageBound : Bool = false,
+         selectedImage : UIImage? = nil,
+         imageTintColor : UIColor? = nil
     ) {
         self.isCircular = isCircular
         self.cornerRadius = cornerRadius
         self.imageMode = imageMode
         self.clipImageBound = clipImageBound
         self.maskImageBound = maskImageBound
+        self.selectedImage = selectedImage
+        self.imageTintColor = imageTintColor
         super.init(frame: .zero)
         setUpImageView()
     }
@@ -51,6 +58,8 @@ class CustomUIImageView : UIImageView {
         
         translatesAutoresizingMaskIntoConstraints = false
         contentMode = imageMode
+        image = selectedImage
+        tintColor = imageTintColor
     }
     
 }

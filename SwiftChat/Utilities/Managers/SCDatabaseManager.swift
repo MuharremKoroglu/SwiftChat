@@ -16,9 +16,15 @@ final class SCDatabaseManager {
     
     private let fireStore = Firestore.firestore()
     
-    private func getCollectionReference (collection : DatabaseCollections) -> CollectionReference {
+    private func getCollectionReference (collection : DatabaseCollections, documentId : String? = nil, secondCollectionId : String? = nil) -> CollectionReference {
         
-        return fireStore.collection(collection.rawValue)
+        var collectionReference = fireStore.collection(collection.rawValue)
+        
+        if let documentId = documentId, let secondCollectionId = secondCollectionId {
+            collectionReference = collectionReference.document(documentId).collection(secondCollectionId)
+        }
+        
+        return collectionReference
         
     }
     
@@ -49,20 +55,33 @@ final class SCDatabaseManager {
         
     }
     
-    func readSingleData <T: Decodable> (collectionId : DatabaseCollections, documentId : String, data : T.Type) async throws -> T {
+    func readSingleData <T: Decodable> (collectionId : DatabaseCollections, documentId : String,secondCollectionId : String? = nil, secondDocumentId : String? = nil, data : T.Type) async throws -> T {
         
-        return try await getDocumentReference(collectionId: collectionId, documentId: documentId).getDocument(as: data.self)
+        let documentReference = getDocumentReference(
+            collectionId: collectionId,
+            documentId: documentId,
+            secondCollectionId: secondCollectionId,
+            secondDocumentId: secondDocumentId
+        )
+        
+        return try await documentReference.getDocument(as: data.self)
         
     }
     
-    func readMultipleData <T : Decodable> (collectionId : DatabaseCollections, query : [String] = [], data : T.Type) async throws -> [T]{
+    func readMultipleData <T : Decodable> (collectionId : DatabaseCollections, documentId : String? = nil, secondCollectionId : String? = nil,query : [String] = [], data : T.Type) async throws -> [T]{
+        
+        let collectionReference = getCollectionReference(
+            collection: collectionId,
+            documentId: documentId,
+            secondCollectionId: secondCollectionId
+        )
         
         let snapshot: QuerySnapshot
         
         if !query.isEmpty {
-            snapshot = try await getCollectionReference(collection: collectionId).whereField(FieldPath.documentID(), in: query).getDocuments()
+            snapshot = try await collectionReference.whereField(FieldPath.documentID(), in: query).getDocuments()
         } else {
-            snapshot = try await getCollectionReference(collection: collectionId).getDocuments()
+            snapshot = try await collectionReference.getDocuments()
         }
         
         var dataModels: [T] = []
@@ -76,21 +95,49 @@ final class SCDatabaseManager {
 
     }
     
-    func updateData (collectionId : DatabaseCollections, documentId : String, field: String, newValue : Any) async throws{
+    func updateData (collectionId : DatabaseCollections, documentId : String, secondCollectionId : String? = nil, secondDocumentId : String? = nil,field: String, newValue : Any) async throws{
+        
+        let documentReference = getDocumentReference(
+            collectionId: collectionId,
+            documentId: documentId,
+            secondCollectionId: secondCollectionId,
+            secondDocumentId: secondDocumentId
+        )
         
         let updatedData : [String : Any] = [
             field : newValue
         ]
         
-        try await getDocumentReference(collectionId: collectionId, documentId: documentId).updateData(updatedData)
+        try await documentReference.updateData(updatedData)
 
     }
     
     
-    func deleteData(collectionId: DatabaseCollections, userId : String) async throws {
+    func deleteSingleData(collectionId: DatabaseCollections, documentId : String, secondCollectionId : String? = nil, secondDocumentId : String? = nil) async throws {
         
-        try await getDocumentReference(collectionId: collectionId, documentId: userId).delete()
+        let documentReference = getDocumentReference(
+            collectionId: collectionId,
+            documentId: documentId,
+            secondCollectionId: secondCollectionId,
+            secondDocumentId: secondDocumentId
+        )
         
+        try await documentReference.delete()
+        
+    }
+    
+    func deleteMultipleData(collectionId: DatabaseCollections, documentId : String? = nil, secondCollectionId : String? = nil) async throws{
+        
+        let collectionReference = getCollectionReference(collection: collectionId, documentId: documentId, secondCollectionId: secondCollectionId)
+        
+        let snapshot = try await collectionReference.getDocuments()
+        
+        let documents = snapshot.documents
+        
+        for document in documents {
+            try await document.reference.delete()
+        }
+ 
     }
     
     func addListener<T: Decodable>(collectionId: DatabaseCollections, documentId: String? = nil, secondCollectionId: String? = nil, data: T.Type, query: String? = nil, completion: @escaping (Result<[T], Error>) -> Void) {

@@ -15,14 +15,26 @@ class ChatViewController: UIViewController {
     
     private let bag = DisposeBag()
     
-    private let chatView = ChatView(viewModel: ChatsViewModel())
+    private let chatView : ChatView
     
+    private let viewModel : ChatsViewModel
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setUpViews ()
         contactsPageButton()
         setUpBindings()
+    }
+    
+    init() {
+        self.viewModel = ChatsViewModel()
+        self.chatView = ChatView(viewModel: viewModel)
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     
@@ -79,6 +91,38 @@ private extension ChatViewController {
                     self?.navigationController?.pushViewController(messageVC, animated: true)
                 }
             }).disposed(by: bag)
+        
+        chatView
+            .selectedChat
+            .subscribe (onNext: { [weak self] recentMessage in
+                let messageVC = MessageViewController(user: recentMessage.receiverProfile)
+                messageVC.hidesBottomBarWhenPushed = true
+                self?.navigationController?.pushViewController(messageVC, animated: true)
+            }).disposed(by: bag)
+        
+        chatView
+            .deletedChat
+            .subscribe(onNext: { [weak self] recentMessage in
+                self?.presentActionSheet(with: recentMessage)
+            }).disposed(by: bag)
+        
+    }
+    
+    func presentActionSheet(with message : RecentMessageModel) {
+        
+        let actionSheet = UIAlertController(
+            title: "Delete Chat",
+            message: "This conversation will be deleted from everywhere",
+            preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self] _ in
+            self?.viewModel.deleteRecentMessage(with: message)
+            
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(actionSheet, animated: true)
         
     }
     

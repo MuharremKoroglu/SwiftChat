@@ -13,6 +13,10 @@ class ChatView: UIView {
     
     let viewModel : ChatsViewModel
     
+    let selectedChat = PublishSubject<RecentMessageModel>()
+    
+    let deletedChat = PublishSubject<RecentMessageModel>()
+    
     private let bag = DisposeBag()
     
     private var recentMessages : [RecentMessageModel] = []
@@ -77,7 +81,6 @@ private extension ChatView {
             .recentMessages
             .subscribe(onNext: { [weak self] recentMessages in
                 self?.recentMessages = recentMessages
-                print("Son mesajlar : \(recentMessages)")
                 self?.chatsTableView.reloadData()
             }).disposed(by: bag)
 
@@ -99,6 +102,20 @@ extension ChatView : UITableViewDelegate, UITableViewDataSource {
         }
         cell.configure(with: recentMessages[indexPath.row])
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let tappedRecentMessage = recentMessages[indexPath.row]
+        selectedChat.onNext(tappedRecentMessage)
+        
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let recentMessage = recentMessages[indexPath.row]
+            deletedChat.onNext(recentMessage)
+        }
     }
     
 }

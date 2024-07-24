@@ -28,7 +28,8 @@ class ChatsTableViewCell: UITableViewCell {
     
     private let lastSentMessageLabel : CustomUILabel = {
         let label = CustomUILabel(
-            labelFont: .systemFont(ofSize: 15),
+            labelFont: .systemFont(ofSize: 16),
+            labelTextColor: .systemGray,
             labelNumberOfLines: 1
         )
         return label
@@ -36,7 +37,9 @@ class ChatsTableViewCell: UITableViewCell {
     
     private let recentMediaMessageImageView : CustomUIImageView = {
         let imageView = CustomUIImageView(
-            isCircular: false
+            isCircular: false,
+            selectedImage: UIImage(systemName: "camera.fill"),
+            imageTintColor: .systemGray
         )
         return imageView
     }()
@@ -47,6 +50,7 @@ class ChatsTableViewCell: UITableViewCell {
         
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        accessoryType = .disclosureIndicator
         setUpViews()
         setUpConstraints()
     }
@@ -55,27 +59,33 @@ class ChatsTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        messageReceiverProfileImage.image = nil
+        messageReceiverNameLabel.text = nil
+        lastSentMessageLabel.text = nil
+        recentMediaMessageImageView.image = nil
+    }
+    
 }
 
 extension ChatsTableViewCell {
     
     func configure(with recentMessage: RecentMessageModel) {
-        downloadReceiverUserProfileImage(from: recentMessage.userProfileImage)
-        messageReceiverNameLabel.text = recentMessage.userName
+        
+        downloadReceiverUserProfileImage(from: recentMessage.receiverProfile.profileImageURL)
+        messageReceiverNameLabel.text = recentMessage.receiverProfile.name
         
         switch recentMessage.recentMessageType {
         case .text:
             recentMediaMessageImageView.isHidden = true
             recentMessageLeadingConstraint.isActive = true
             recentMessageLeadingConstraintWithImage.isActive = false
-            recentMessageTrailingConstraint.isActive = true
             lastSentMessageLabel.text = recentMessage.recentMessageContent
         case .media:
             recentMediaMessageImageView.isHidden = false
             recentMessageLeadingConstraint.isActive = false
             recentMessageLeadingConstraintWithImage.isActive = true
-            recentMessageTrailingConstraint.isActive = false
-            recentMediaMessageImageView.image = UIImage(systemName: "camera.fill")
             lastSentMessageLabel.text = "Media"
         }
     }
@@ -110,19 +120,16 @@ private extension ChatsTableViewCell {
             messageReceiverNameLabel.leadingAnchor.constraint(equalTo: messageReceiverProfileImage.trailingAnchor, constant: 10),
             messageReceiverNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             
-            recentMediaMessageImageView.topAnchor.constraint(equalTo: messageReceiverNameLabel.bottomAnchor,constant: 5),
+            recentMediaMessageImageView.topAnchor.constraint(equalTo: messageReceiverNameLabel.bottomAnchor,constant: 8),
             recentMediaMessageImageView.leadingAnchor.constraint(equalTo: messageReceiverProfileImage.trailingAnchor,constant: 10),
-            recentMediaMessageImageView.trailingAnchor.constraint(equalTo: lastSentMessageLabel.leadingAnchor,constant: -10),
 
-            lastSentMessageLabel.topAnchor.constraint(equalTo: messageReceiverNameLabel.bottomAnchor, constant: 7),
+            lastSentMessageLabel.topAnchor.constraint(equalTo: messageReceiverNameLabel.bottomAnchor, constant: 9),
+            lastSentMessageLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -55)
         ])
         
         recentMessageLeadingConstraint =             lastSentMessageLabel.leadingAnchor.constraint(equalTo: messageReceiverProfileImage.trailingAnchor, constant: 10)
         
-        recentMessageLeadingConstraintWithImage = lastSentMessageLabel.leadingAnchor.constraint(equalTo: recentMediaMessageImageView.trailingAnchor)
-        
-        recentMessageTrailingConstraint = lastSentMessageLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -50)
-        
+        recentMessageLeadingConstraintWithImage = lastSentMessageLabel.leadingAnchor.constraint(equalTo: recentMediaMessageImageView.trailingAnchor,constant: 5)
         
     }
     
