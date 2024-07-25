@@ -116,6 +116,7 @@ private extension ChatViewController {
             preferredStyle: .actionSheet)
         
         actionSheet.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self] _ in
+            
             self?.viewModel.deleteRecentMessage(with: message)
             
         }))

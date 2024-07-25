@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import FirebaseFirestore
 
 @MainActor
 class ChatsViewModel {
@@ -22,14 +23,16 @@ class ChatsViewModel {
         return userId
     }
     
+    private var listener : ListenerRegistration?
+    
     init() {
         fetchRecentMessages()
     }
     
     
     func fetchRecentMessages() {
-                
-        SCDatabaseManager.shared.addListener(
+        
+        listener = SCDatabaseManager.shared.addListener(
             collectionId: .mainRecentMessages,
             documentId: authenticatedUserId,
             secondCollectionId: DatabaseCollections.subRecentMessage.rawValue,
@@ -37,25 +40,35 @@ class ChatsViewModel {
             query: MessageModel.CodingKeys.messageDate.rawValue) { result in
                 switch result {
                 case .success(let newMessages):
-                    self.fetchUserData(with: newMessages)
+                    self.addNewRecentMessage(with: newMessages)
                 case .failure(let error):
                     print("Mesaj dinleme başarısız: \(error)")
                 }
             }
-    
-    }
-
-    func deleteRecentMessage(with message : RecentMessageModel) {
         
+    }
+    
+    func deleteRecentMessage(with message : RecentMessageModel) {
+                
         Task {
             
             do {
                 
-                var recentMessages = try recentMessages.value()
+                removeListener()
                 
-                recentMessages.removeAll { $0.receiverProfile.id == message.receiverProfile.id }
+                var currentMessages = try self.recentMessages.value()
+                if let index = currentMessages.firstIndex(where: { $0.receiverProfile.id == message.receiverProfile.id }) {
+                    currentMessages.remove(at: index)
+                    self.recentMessages.onNext(currentMessages)
+                }
                 
-                self.recentMessages.onNext(recentMessages)
+                
+                try await SCDatabaseManager.shared.deleteMultipleData(
+                    collectionId: .messages,
+                    documentId: authenticatedUserId,
+                    secondCollectionId: message.receiverProfile.id
+                )
+                
                 
                 try await SCDatabaseManager.shared.deleteSingleData(
                     collectionId: .mainRecentMessages,
@@ -64,29 +77,27 @@ class ChatsViewModel {
                     secondDocumentId: message.receiverProfile.id
                 )
                 
-                try await SCDatabaseManager.shared.deleteMultipleData(
-                    collectionId: .messages,
-                    documentId: authenticatedUserId,
-                    secondCollectionId: message.receiverProfile.id
-                )
-                
+                fetchRecentMessages()
+                                                
             }catch {
                 print("Son mesaj silinemedi : \(error)")
             }
- 
         }
-        
+                
     }
     
+}
+
+private extension ChatsViewModel {
     
-    private func fetchUserData(with messages : [MessageModel]) {
+    func removeListener() {
+        listener?.remove()
+    }
+    
+    func addNewRecentMessage(with messages : [MessageModel]) {
         
         Task {
             do {
-                
-                guard let authenticatedUserId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
-                    return
-                }
                 
                 let userIds = messages.compactMap { message in
                     message.receiverId == authenticatedUserId ? message.senderId : message.receiverId
@@ -119,7 +130,10 @@ class ChatsViewModel {
                 }
                 
                 var currentMessages = try self.recentMessages.value()
-                currentMessages.append(contentsOf: chatMessages)
+                let filteredMessages = chatMessages.filter { recentMessage in
+                    !currentMessages.contains(where: {$0.receiverProfile.id == recentMessage.receiverProfile.id})
+                }
+                currentMessages.append(contentsOf: filteredMessages)
                 self.recentMessages.onNext(currentMessages)
 
             }catch {
@@ -128,6 +142,5 @@ class ChatsViewModel {
         }
  
     }
-    
     
 }

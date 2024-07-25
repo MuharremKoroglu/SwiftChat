@@ -66,7 +66,7 @@ class MessageViewModel {
         
         let receiverId = user.id
         
-        SCDatabaseManager.shared.addListener(
+        let _ = SCDatabaseManager.shared.addListener(
             collectionId: .messages,
             documentId: senderId,
             secondCollectionId: receiverId,

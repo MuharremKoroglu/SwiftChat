@@ -16,7 +16,11 @@ final class SCDatabaseManager {
     
     private let fireStore = Firestore.firestore()
     
-    private func getCollectionReference (collection : DatabaseCollections, documentId : String? = nil, secondCollectionId : String? = nil) -> CollectionReference {
+    private func getCollectionReference (
+        collection : DatabaseCollections,
+        documentId : String? = nil,
+        secondCollectionId : String? = nil
+    ) -> CollectionReference {
         
         var collectionReference = fireStore.collection(collection.rawValue)
         
@@ -28,7 +32,12 @@ final class SCDatabaseManager {
         
     }
     
-    private func getDocumentReference (collectionId : DatabaseCollections, documentId : String, secondCollectionId : String? = nil, secondDocumentId : String? = nil) -> DocumentReference {
+    private func getDocumentReference (
+        collectionId : DatabaseCollections,
+        documentId : String,
+        secondCollectionId : String? = nil,
+        secondDocumentId : String? = nil
+    ) -> DocumentReference {
         
         var documentReference = getCollectionReference(collection: collectionId).document(documentId)
         
@@ -44,7 +53,13 @@ final class SCDatabaseManager {
         
     }
     
-    func createData <T : Encodable> (collectionId : DatabaseCollections, documentId : String, secondCollectionId : String? = nil, secondDocumentId : String? = nil ,data : T) async throws {
+    func createData <T : Encodable> (
+        collectionId : DatabaseCollections,
+        documentId : String,
+        secondCollectionId : String? = nil,
+        secondDocumentId : String? = nil ,
+        data : T
+    ) async throws {
         
         try getDocumentReference(
             collectionId: collectionId,
@@ -55,7 +70,13 @@ final class SCDatabaseManager {
         
     }
     
-    func readSingleData <T: Decodable> (collectionId : DatabaseCollections, documentId : String,secondCollectionId : String? = nil, secondDocumentId : String? = nil, data : T.Type) async throws -> T {
+    func readSingleData <T: Decodable> (
+        collectionId : DatabaseCollections,
+        documentId : String,
+        secondCollectionId : String? = nil,
+        secondDocumentId : String? = nil,
+        data : T.Type
+    ) async throws -> T {
         
         let documentReference = getDocumentReference(
             collectionId: collectionId,
@@ -68,7 +89,13 @@ final class SCDatabaseManager {
         
     }
     
-    func readMultipleData <T : Decodable> (collectionId : DatabaseCollections, documentId : String? = nil, secondCollectionId : String? = nil,query : [String] = [], data : T.Type) async throws -> [T]{
+    func readMultipleData <T : Decodable> (
+        collectionId : DatabaseCollections,
+        documentId : String? = nil,
+        secondCollectionId : String? = nil,
+        query : [String] = [],
+        data : T.Type
+    ) async throws -> [T]{
         
         let collectionReference = getCollectionReference(
             collection: collectionId,
@@ -95,7 +122,14 @@ final class SCDatabaseManager {
 
     }
     
-    func updateData (collectionId : DatabaseCollections, documentId : String, secondCollectionId : String? = nil, secondDocumentId : String? = nil,field: String, newValue : Any) async throws{
+    func updateData (
+        collectionId : DatabaseCollections,
+        documentId : String,
+        secondCollectionId : String? = nil,
+        secondDocumentId : String? = nil,
+        field: String,
+        newValue : Any
+    ) async throws{
         
         let documentReference = getDocumentReference(
             collectionId: collectionId,
@@ -113,7 +147,12 @@ final class SCDatabaseManager {
     }
     
     
-    func deleteSingleData(collectionId: DatabaseCollections, documentId : String, secondCollectionId : String? = nil, secondDocumentId : String? = nil) async throws {
+    func deleteSingleData(
+        collectionId: DatabaseCollections,
+        documentId : String,
+        secondCollectionId : String? = nil,
+        secondDocumentId : String? = nil
+    ) async throws {
         
         let documentReference = getDocumentReference(
             collectionId: collectionId,
@@ -126,7 +165,11 @@ final class SCDatabaseManager {
         
     }
     
-    func deleteMultipleData(collectionId: DatabaseCollections, documentId : String? = nil, secondCollectionId : String? = nil) async throws{
+    func deleteMultipleData(
+        collectionId: DatabaseCollections,
+        documentId : String? = nil,
+        secondCollectionId : String? = nil
+    ) async throws{
         
         let collectionReference = getCollectionReference(collection: collectionId, documentId: documentId, secondCollectionId: secondCollectionId)
         
@@ -140,7 +183,14 @@ final class SCDatabaseManager {
  
     }
     
-    func addListener<T: Decodable>(collectionId: DatabaseCollections, documentId: String? = nil, secondCollectionId: String? = nil, data: T.Type, query: String? = nil, completion: @escaping (Result<[T], Error>) -> Void) {
+    func addListener<T: Decodable>(
+        collectionId: DatabaseCollections,
+        documentId: String? = nil,
+        secondCollectionId: String? = nil,
+        data: T.Type,
+        query: String? = nil,
+        completion: @escaping (Result<[T], Error>) -> Void
+    ) -> ListenerRegistration? {
         
         let collectionReference: CollectionReference = getCollectionReference(collection: collectionId)
         var queryReference: Query = collectionReference
@@ -155,7 +205,7 @@ final class SCDatabaseManager {
             queryReference = queryReference.order(by: query)
         }
         
-        queryReference.addSnapshotListener { snapshot, error in
+        let listenerRegistration = queryReference.addSnapshotListener { snapshot, error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -178,9 +228,8 @@ final class SCDatabaseManager {
                 completion(.failure(error))
             }
         }
+        
+        return listenerRegistration
     }
-
-
-
     
 }
