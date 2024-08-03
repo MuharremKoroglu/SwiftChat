@@ -11,34 +11,31 @@ class ContactsTableViewCell: UITableViewCell {
     
     static let cellIdentifier = "ContactTableViewCell"
     
-    private let contactProfileImage : UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        imageView.clipsToBounds = true
+    private let contactProfileImage : CustomUIImageView = {
+        let imageView = CustomUIImageView(
+            isCircular: true
+        )
         return imageView
     }()
     
-    private let contactName : UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 15, weight: .bold)
-        label.textColor = .label
+    private let contactName : CustomUILabel = {
+        let label = CustomUILabel(
+            labelFont: .systemFont(ofSize: 15, weight: .bold)
+        )
         return label
     }()
     
-    private let contactPhoneNumber : UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 12)
-        label.textColor = .label
+    private let contactPhoneNumber : CustomUILabel = {
+        let label = CustomUILabel(
+            labelFont: .systemFont(ofSize: 12),
+            labelNumberOfLines: 1
+        )
         return label
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setUpViews()
         setUpConstraints()
     }
     
@@ -46,45 +43,38 @@ class ContactsTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        contactProfileImage.layer.cornerRadius = contactProfileImage.frame.size.width / 2
-    }
+}
+
+extension ContactsTableViewCell {
     
     func configure (with contact : ContactModel) {
-        Task {
-            let response = await SCImageDownloaderManager.shared.downloadImage(imageUrl: contact.profileImageURL)
-            
-            switch response {
-            case .success(let data):
-                self.contactProfileImage.image = UIImage(data: data)
-            case .failure(_):
-                self.contactProfileImage.image = UIImage(systemName: "gear")
-            }
-            
-        }
+
         self.contactName.text = contact.name
         self.contactPhoneNumber.text = contact.phone
+        downloadContactProfileImage(with: contact.profileImageURL)
         
     }
     
+}
+
+private extension ContactsTableViewCell {
     
-    private func setUpConstraints() {
+    func setUpViews() {
         
         contentView.addSubViews(
             contactProfileImage,
             contactName,
-            contactPhoneNumber)
+            contactPhoneNumber
+        )
+        
+    }
+    
+    
+    func setUpConstraints() {
         
         NSLayoutConstraint.activate([
+            
             contactProfileImage.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             contactProfileImage.centerYAnchor.constraint(equalTo: centerYAnchor),
             contactProfileImage.heightAnchor.constraint(equalToConstant: 50),
@@ -97,10 +87,26 @@ class ContactsTableViewCell: UITableViewCell {
             contactPhoneNumber.topAnchor.constraint(equalTo: contactName.bottomAnchor, constant: 5),
             contactPhoneNumber.leadingAnchor.constraint(equalTo: contactProfileImage.trailingAnchor, constant: 10),
             contactPhoneNumber.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
+            
         ])
         
     }
     
+    func downloadContactProfileImage(with imageUrl : URL) {
+        
+        Task {
+            let response = await SCImageDownloaderManager.shared.downloadImage(imageUrl: imageUrl)
+            
+            switch response {
+            case .success(let data):
+                self.contactProfileImage.image = UIImage(data: data)
+            case .failure(_):
+                self.contactProfileImage.image = UIImage(resource: .anonUser)
+            }
+            
+        }
+        
+    }
     
-
+    
 }

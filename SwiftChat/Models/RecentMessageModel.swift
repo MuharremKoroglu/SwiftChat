@@ -9,6 +9,7 @@ import Foundation
 
 struct RecentMessageModel {
     
+    let recentMessageId : String
     let receiverProfile : ContactModel
     let recentMessageContent : String
     let recentMessageType : MessageType

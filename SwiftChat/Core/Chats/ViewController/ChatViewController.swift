@@ -11,7 +11,7 @@ import RxCocoa
 
 class ChatViewController: UIViewController {
     
-    private let contactsPage = ContactsViewController()
+    private let contactsPage = ContactsViewController(viewModel: ContactsViewModel())
     
     private let bag = DisposeBag()
     
@@ -22,13 +22,14 @@ class ChatViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        setUpViews ()
+        setUpViews()
+        setUpConstraints()
         contactsPageButton()
         setUpBindings()
     }
     
-    init() {
-        self.viewModel = ChatsViewModel()
+    init(viewModel : ChatsViewModel) {
+        self.viewModel = viewModel
         self.chatView = ChatView(viewModel: viewModel)
         super.init(nibName: nil, bundle: nil)
     }
@@ -47,6 +48,9 @@ private extension ChatViewController {
         
         view.addSubViews(chatView)
         
+    }
+    
+    func setUpConstraints() {
         
         NSLayoutConstraint.activate([
             
@@ -56,6 +60,7 @@ private extension ChatViewController {
             chatView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
             
         ])
+        
     }
     
     
@@ -103,27 +108,13 @@ private extension ChatViewController {
         chatView
             .deletedChat
             .subscribe(onNext: { [weak self] recentMessage in
-                self?.presentActionSheet(with: recentMessage)
+                guard let strongSelf = self else {return}
+                SCAlertManager.presentAlert(viewController: strongSelf, alertType: .deleteRecentMessage(
+                    deleteRecentMessageHandler: {
+                        strongSelf.viewModel.deleteRecentMessage(with: recentMessage)
+                    })
+                )
             }).disposed(by: bag)
-        
-    }
-    
-    func presentActionSheet(with message : RecentMessageModel) {
-        
-        let actionSheet = UIAlertController(
-            title: "Delete Chat",
-            message: "This conversation will be deleted from everywhere",
-            preferredStyle: .actionSheet)
-        
-        actionSheet.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self] _ in
-            
-            self?.viewModel.deleteRecentMessage(with: message)
-            
-        }))
-        
-        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
-        present(actionSheet, animated: true)
         
     }
     

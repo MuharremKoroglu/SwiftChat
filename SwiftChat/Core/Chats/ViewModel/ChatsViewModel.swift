@@ -32,19 +32,29 @@ class ChatsViewModel {
     
     func fetchRecentMessages() {
         
+        removeListener()
+        
+        var messages = try? recentMessages.value()
+        messages?.removeAll()
+        self.recentMessages.onNext(messages ?? [])
+        
         listener = SCDatabaseManager.shared.addListener(
             collectionId: .mainRecentMessages,
             documentId: authenticatedUserId,
             secondCollectionId: DatabaseCollections.subRecentMessage.rawValue,
             data: MessageModel.self,
-            query: MessageModel.CodingKeys.messageDate.rawValue) { result in
-                switch result {
-                case .success(let newMessages):
-                    self.addNewRecentMessage(with: newMessages)
-                case .failure(let error):
-                    print("Mesaj dinleme başarısız: \(error)")
-                }
+            query: { query in
+                query.order(by: MessageModel.CodingKeys.messageDate.rawValue, descending: true)
             }
+        ) { result in
+            switch result {
+            case .success(let data):
+                guard let newMessages = data as? [MessageModel] else {return}
+                self.addNewRecentMessage(with: newMessages)
+            case .failure(let error):
+                print("Chat View'da Mesaj dinleme başarısız: \(error)")
+            }
+        }
         
     }
     
@@ -57,11 +67,10 @@ class ChatsViewModel {
                 removeListener()
                 
                 var currentMessages = try self.recentMessages.value()
-                if let index = currentMessages.firstIndex(where: { $0.receiverProfile.id == message.receiverProfile.id }) {
+                if let index = currentMessages.firstIndex(where: { $0.recentMessageId == message.recentMessageId }) {
                     currentMessages.remove(at: index)
                     self.recentMessages.onNext(currentMessages)
                 }
-                
                 
                 try await SCDatabaseManager.shared.deleteMultipleData(
                     collectionId: .messages,
@@ -75,6 +84,12 @@ class ChatsViewModel {
                     documentId: authenticatedUserId,
                     secondCollectionId: DatabaseCollections.subRecentMessage.rawValue,
                     secondDocumentId: message.receiverProfile.id
+                )
+                
+                try await SCMediaStorageManager.shared.deleteMultipleData(
+                    folderName: .messageMedia,
+                    fileName: authenticatedUserId,
+                    secondFileName: message.receiverProfile.id
                 )
                 
                 fetchRecentMessages()
@@ -120,6 +135,7 @@ private extension ChatsViewModel {
                     }
                     
                     let recentMessage = RecentMessageModel(
+                        recentMessageId: message.messageId,
                         receiverProfile: contact,
                         recentMessageContent: message.messageContent,
                         recentMessageType: message.messageType,
@@ -130,10 +146,14 @@ private extension ChatsViewModel {
                 }
                 
                 var currentMessages = try self.recentMessages.value()
-                let filteredMessages = chatMessages.filter { recentMessage in
-                    !currentMessages.contains(where: {$0.receiverProfile.id == recentMessage.receiverProfile.id})
+                
+                currentMessages.removeAll { currentMessage in
+                    chatMessages.contains { chatMessage in
+                        currentMessage.receiverProfile.id  == chatMessage.receiverProfile.id
+                    }
                 }
-                currentMessages.append(contentsOf: filteredMessages)
+                
+                currentMessages.insert(contentsOf: chatMessages, at: 0)
                 self.recentMessages.onNext(currentMessages)
 
             }catch {

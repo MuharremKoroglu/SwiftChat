@@ -9,6 +9,7 @@ import Foundation
 
 struct MessageModel : Codable {
     
+    let messageId : String
     let senderId : String
     let receiverId : String
     let messageContent : String
@@ -17,6 +18,7 @@ struct MessageModel : Codable {
     
     enum CodingKeys : String, CodingKey {
         
+        case messageId = "message_id"
         case senderId = "sender_id"
         case receiverId = "receiver_id"
         case messageContent = "message_content"

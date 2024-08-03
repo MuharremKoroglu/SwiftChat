@@ -13,11 +13,28 @@ class ContactsViewController: UIViewController {
     
     let selectedUser = PublishSubject<ContactModel>()
     
-    private let searchController = UISearchController()
+    private let searchController : UISearchController = {
+        let searchController = UISearchController()
+        searchController.automaticallyShowsCancelButton = false
+        searchController.isActive = false
+        return searchController
+    }()
     
     private let bag = DisposeBag()
 
-    private let contactsView = ContactsView(viewModel: ContactsViewModel())
+    private let contactsView : ContactsView
+    
+    private let viewModel : ContactsViewModel
+    
+    init(viewModel: ContactsViewModel) {
+        self.viewModel = viewModel
+        self.contactsView = ContactsView(viewModel: viewModel)
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,30 +46,15 @@ class ContactsViewController: UIViewController {
         setUpBindings()
     }
     
-
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        searchController.isActive = false
+        viewModel.filterContacts(searchText: "")
+    }
+    
 }
 
 private extension ContactsViewController {
-    
-    
-    @objc func closeContactsPage() {
-        
-        navigationController?.dismiss(animated: true)
-        
-    }
-    
-    func setUpNavigationComponents() {
-        
-        navigationController?.navigationBar.topItem?.setRightBarButton(UIBarButtonItem(
-            image: UIImage(systemName: "xmark.circle.fill"),
-            style: .plain,
-            target: self,
-            action: #selector(closeContactsPage)
-        ), animated: true)
-        
-        navigationItem.searchController = searchController
-        
-    }
     
     func setUpViews() {
         
@@ -73,6 +75,26 @@ private extension ContactsViewController {
             contactsView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
             
         ])
+        
+    }
+    
+    
+    @objc func closeContactsPage() {
+        
+        navigationController?.dismiss(animated: true)
+        
+    }
+    
+    func setUpNavigationComponents() {
+        
+        navigationController?.navigationBar.topItem?.setRightBarButton(UIBarButtonItem(
+            image: UIImage(systemName: "xmark.circle.fill"),
+            style: .plain,
+            target: self,
+            action: #selector(closeContactsPage)
+        ), animated: true)
+        
+        navigationItem.searchController = searchController
         
     }
     

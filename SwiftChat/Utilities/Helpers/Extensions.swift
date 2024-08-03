@@ -17,3 +17,22 @@ extension UIView {
     }
     
 }
+
+extension Date {
+    
+    func formattedMessageDate() -> String {
+        let calendar = Calendar.current
+        let dateFormatter = DateFormatter()
+        
+        if calendar.isDateInToday(self) {
+            dateFormatter.dateFormat = "HH:mm"
+            return dateFormatter.string(from: self)
+        } else if calendar.isDateInYesterday(self) {
+            return "Yesterday"
+        } else {
+            dateFormatter.dateFormat = "dd.MM.yyyy"
+            return dateFormatter.string(from: self)
+        }
+    }
+    
+}

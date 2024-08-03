@@ -97,10 +97,10 @@ private extension MessagesTableViewCell {
             messageLabel.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor, constant: -12),
             messageLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
             
-            messageImageView.topAnchor.constraint(equalTo: bubbleView.topAnchor, constant: 8),
-            messageImageView.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -8),
-            messageImageView.leadingAnchor.constraint(equalTo: bubbleView.leadingAnchor, constant: 8),
-            messageImageView.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor, constant: -8),
+            messageImageView.topAnchor.constraint(equalTo: bubbleView.topAnchor, constant: 4),
+            messageImageView.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -4),
+            messageImageView.leadingAnchor.constraint(equalTo: bubbleView.leadingAnchor, constant: 4),
+            messageImageView.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor, constant: -4),
             
             bubbleView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
             bubbleView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),

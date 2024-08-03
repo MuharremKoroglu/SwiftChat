@@ -66,19 +66,7 @@ class ContactsViewModel {
 }
 
 extension ContactsViewModel {
-    
-    private func groupContactsByLetter(contacts: [ContactModel]) -> [ContactSection] {
-        let groupedDict = Dictionary(grouping: contacts) {
-            $0.name.prefix(1)
-        }
         
-        let sortedGroupedDict = groupedDict.map {
-            ContactSection(letter: String($0.key), contacts: $0.value)
-        }.sorted { $0.letter < $1.letter }
-        
-        return sortedGroupedDict
-    }
-    
     func filterContacts(searchText: String) {
         if searchText.isEmpty {
             let sections = self.groupContactsByLetter(contacts: contacts)
@@ -91,6 +79,22 @@ extension ContactsViewModel {
             let sections = self.groupContactsByLetter(contacts: filteredList)
             filteredContacts.onNext(sections)
         }
+    }
+    
+}
+
+private extension ContactsViewModel {
+    
+    func groupContactsByLetter(contacts: [ContactModel]) -> [ContactSection] {
+        let groupedDict = Dictionary(grouping: contacts) {
+            $0.name.prefix(1)
+        }
+        
+        let sortedGroupedDict = groupedDict.map {
+            ContactSection(letter: String($0.key), contacts: $0.value)
+        }.sorted { $0.letter < $1.letter }
+        
+        return sortedGroupedDict
     }
     
 }

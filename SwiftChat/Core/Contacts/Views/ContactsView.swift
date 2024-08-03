@@ -58,8 +58,10 @@ private extension ContactsView {
     
     func setUpViews() {
         
-        addSubview(spinner)
-        addSubview(contactsTableView)
+        addSubViews(
+            spinner,
+            contactsTableView
+        )
         
     }
     

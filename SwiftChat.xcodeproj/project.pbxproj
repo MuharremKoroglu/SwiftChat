@@ -71,7 +71,7 @@
 		3BF96C362C0F4F5B00CA3ED3 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C352C0F4F5B00CA3ED3 /* SettingsView.swift */; };
 		3BF96C382C0F50A400CA3ED3 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C372C0F50A400CA3ED3 /* SettingsViewModel.swift */; };
 		3BF96C3A2C0F9E5800CA3ED3 /* AlertTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */; };
-		3BF96C3C2C0FA54600CA3ED3 /* SCAlertmanager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C3B2C0FA54600CA3ED3 /* SCAlertmanager.swift */; };
+		3BF96C3C2C0FA54600CA3ED3 /* SCAlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C3B2C0FA54600CA3ED3 /* SCAlertManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -132,7 +132,7 @@
 		3BF96C352C0F4F5B00CA3ED3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		3BF96C372C0F50A400CA3ED3 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTypes.swift; sourceTree = "<group>"; };
-		3BF96C3B2C0FA54600CA3ED3 /* SCAlertmanager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCAlertmanager.swift; sourceTree = "<group>"; };
+		3BF96C3B2C0FA54600CA3ED3 /* SCAlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCAlertManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,7 +188,7 @@
 				3B2155142C0E01050013501A /* SCAuthenticationManager.swift */,
 				3BD74D3E2C15B9B5009399A3 /* SCDatabaseManager.swift */,
 				3BD74D402C15DEC8009399A3 /* SCMediaStorageManager.swift */,
-				3BF96C3B2C0FA54600CA3ED3 /* SCAlertmanager.swift */,
+				3BF96C3B2C0FA54600CA3ED3 /* SCAlertManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -654,7 +654,7 @@
 				3B51D1F02BF39AB700145F77 /* ChatsViewModel.swift in Sources */,
 				3B54F8E62C0A640200FD1827 /* SignUpView.swift in Sources */,
 				3B98311D2C06151900434027 /* SignUpViewController.swift in Sources */,
-				3BF96C3C2C0FA54600CA3ED3 /* SCAlertmanager.swift in Sources */,
+				3BF96C3C2C0FA54600CA3ED3 /* SCAlertManager.swift in Sources */,
 				3BF96C382C0F50A400CA3ED3 /* SettingsViewModel.swift in Sources */,
 				3B2154D42C0DE2C70013501A /* CustomUIActivityIndicator.swift in Sources */,
 				3B2B052E2BF24C10007F6F52 /* SCTabBarRootController.swift in Sources */,

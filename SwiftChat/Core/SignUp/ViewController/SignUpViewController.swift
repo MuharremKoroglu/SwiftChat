@@ -65,7 +65,7 @@ private extension SignUpViewController {
             .viewModel
             .errorType
             .subscribe(onNext: { alertType in
-                SCAlertmanager.presentAlert(
+                SCAlertManager.presentAlert(
                     viewController: self,
                     alertType: alertType
                 )

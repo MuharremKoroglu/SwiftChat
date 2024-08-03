@@ -188,48 +188,80 @@ final class SCDatabaseManager {
         documentId: String? = nil,
         secondCollectionId: String? = nil,
         data: T.Type,
-        query: String? = nil,
-        completion: @escaping (Result<[T], Error>) -> Void
+        query: ((Query) -> Query)? = nil,
+        documentChangeType: DocumentChangeType? = nil,
+        completion: @escaping (Result<Any?, Error>) -> Void
     ) -> ListenerRegistration? {
         
-        let collectionReference: CollectionReference = getCollectionReference(collection: collectionId)
-        var queryReference: Query = collectionReference
+        let reference: Any
         
-        if let documentId = documentId, let secondCollectionId = secondCollectionId {
-            queryReference = collectionReference.document(documentId).collection(secondCollectionId)
-        } else if let documentId = documentId {
-            queryReference = collectionReference.document(documentId).collection("")
+        if let documentId = documentId {
+            if let secondCollectionId = secondCollectionId {
+                reference = getCollectionReference(collection: collectionId, documentId: documentId, secondCollectionId: secondCollectionId)
+            } else {
+                reference = getDocumentReference(collectionId: collectionId, documentId: documentId)
+            }
+        } else {
+            reference = getCollectionReference(collection: collectionId)
         }
         
-        if let query = query {
-            queryReference = queryReference.order(by: query)
-        }
+        let listenerRegistration: ListenerRegistration
         
-        let listenerRegistration = queryReference.addSnapshotListener { snapshot, error in
-            if let error = error {
-                completion(.failure(error))
-                return
+        if let reference = reference as? DocumentReference {
+            listenerRegistration = reference.addSnapshotListener { documentSnapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let document = documentSnapshot else {
+                    completion(.failure(NSError(domain: "Firestore", code: -1, userInfo: [NSLocalizedDescriptionKey: "No document data"])))
+                    return
+                }
+                
+                do {
+                    let model = try document.data(as: data.self)
+                    completion(.success(model))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        } else if let reference = reference as? Query {
+            var queryReference = reference
+            if let query = query {
+                queryReference = query(queryReference)
             }
             
-            guard let snapshot = snapshot else {
-                completion(.failure(NSError(domain: "Firestore", code: -1, userInfo: [NSLocalizedDescriptionKey: "No snapshot data"])))
-                return
-            }
-            
-            do {
-                let models: [T] = try snapshot.documentChanges.compactMap { change in
-                    if change.type == .added {
+            listenerRegistration = queryReference.addSnapshotListener { querySnapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let snapshot = querySnapshot else {
+                    completion(.failure(NSError(domain: "Firestore", code: -1, userInfo: [NSLocalizedDescriptionKey: "No snapshot data"])))
+                    return
+                }
+                
+                do {
+                    let models: [T] = try snapshot.documentChanges.compactMap { change in
+                        if let documentChangeType = documentChangeType, change.type != documentChangeType {
+                            return nil
+                        }
                         return try change.document.data(as: data.self)
                     }
-                    return nil
+                    completion(.success(models))
+                } catch {
+                    completion(.failure(error))
                 }
-                completion(.success(models))
-            } catch {
-                completion(.failure(error))
             }
+        } else {
+            completion(.failure(NSError(domain: "Firestore", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid reference type"])))
+            return nil
         }
         
         return listenerRegistration
     }
+
     
 }

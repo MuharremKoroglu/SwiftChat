@@ -16,7 +16,7 @@ class SCTabBarRootController: UITabBarController {
     
     private func setUpTabBarController () {
         
-        let chatsVC = ChatViewController()
+        let chatsVC = ChatViewController(viewModel: ChatsViewModel())
         let channelsVC = ChannelsViewController()
         let settingsVC = SettingsViewController()
         

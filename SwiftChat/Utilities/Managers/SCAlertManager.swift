@@ -8,14 +8,20 @@
 import Foundation
 import UIKit
 
-struct SCAlertmanager {
+struct SCAlertManager {
     
     @MainActor
     static func presentAlert(viewController : UIViewController, alertType : AlertTypes) {
         
-        let alertController = UIAlertController(title: alertType.errorTitle, message: alertType.errorMessage, preferredStyle: .alert)
-        let alertAction = UIAlertAction(title: "Okay", style: .cancel)
-        alertController.addAction(alertAction)
+        let alertController = UIAlertController(
+            title: alertType.alertTitle,
+            message: alertType.alertMessage,
+            preferredStyle: alertType.alertStyle)
+        
+        for action in alertType.alertActions {
+            alertController.addAction(action)
+        }
+        
         viewController.present(alertController, animated: true)
     
     }

@@ -46,6 +46,10 @@ class MessageViewController: UIViewController {
         setUpNavigationBar()
         setUpBindings()
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        viewModel.removeListener()
+    }
 
 }
 
@@ -108,31 +112,17 @@ private extension MessageViewController {
         
         messageView.addMediaButtonTapped
             .subscribe(onNext: { [weak self] _ in
-                self?.presentActionSheet()
+                guard let strongSelf = self else {return}
+                SCAlertManager.presentAlert(viewController: strongSelf, alertType: .sendMedia(
+                    cameraHandler: {
+                        strongSelf.pickImage(with: .camera)
+                    },
+                    photoLibraryHandler: {
+                        strongSelf.pickImage(with: .photoLibrary)
+                    })
+                )
             })
             .disposed(by: bag)
-    }
-    
-    func presentActionSheet() {
-        
-        let actionSheet = UIAlertController(
-            title: "Send Media",
-            message: "Where would you like to use it?",
-            preferredStyle: .actionSheet)
-        
-        actionSheet.addAction(UIAlertAction(title: "Camera", style: .default, handler: { [weak self] _ in
-            self?.pickImage(with: .camera)
-            
-        }))
-        
-        actionSheet.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: { [weak self] _ in
-            self?.pickImage(with: .photoLibrary)
-        }))
-        
-        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
-        present(actionSheet, animated: true)
-        
     }
     
     func pickImage(with sourceType : UIImagePickerController.SourceType) {
@@ -162,15 +152,25 @@ extension MessageViewController : UIImagePickerControllerDelegate, UINavigationC
                 return
             }
             
-            let imageUrl = try await SCMediaStorageManager.shared.uploadData(
+            let senderImageUrl = try await SCMediaStorageManager.shared.uploadData(
                 folderName: .messageMedia,
                 fileName: senderId,
-                secondFileName: UUID().uuidString,
+                secondFileName: user.id,
+                thirdFileName: UUID().uuidString,
+                data: compressedImage
+            )
+            
+            let receiverImageUrl = try await SCMediaStorageManager.shared.uploadData(
+                folderName: .messageMedia,
+                fileName: user.id,
+                secondFileName: senderId,
+                thirdFileName: UUID().uuidString,
                 data: compressedImage
             )
             
             viewModel.sendMessage(
-                message: imageUrl.absoluteString,
+                senderMessageContent: senderImageUrl.absoluteString,
+                receiverMessageContent: receiverImageUrl.absoluteString,
                 messageType: .media
             )
         }

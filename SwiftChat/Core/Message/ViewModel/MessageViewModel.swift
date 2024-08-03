@@ -17,41 +17,62 @@ class MessageViewModel {
     
     let user: ContactModel
     
+    private var listener : ListenerRegistration?
+    
+    private var authenticatedUserId : String {
+        guard let userId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
+            return ""
+        }
+        
+        return userId
+    }
+    
+    private var receiverUserId : String {
+       return user.id
+    }
+    
     init(user: ContactModel) {
         self.user = user
         fetchMessages()
     }
     
-    func sendMessage(message: String, messageType : MessageType) {
+    func sendMessage(senderMessageContent: String, receiverMessageContent : String, messageType : MessageType) {
         Task {
             do {
-                guard let senderId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
-                    return
-                }
+                                
+                let senderMessage = MessageModel(
+                    messageId: UUID().uuidString,
+                    senderId: authenticatedUserId,
+                    receiverId: receiverUserId,
+                    messageContent: senderMessageContent,
+                    messageDate: Date(),
+                    messageType: messageType
+                )
                 
-                let receiverId = user.id
-                
-                let message = MessageModel(
-                    senderId: senderId,
-                    receiverId: receiverId,
-                    messageContent: message,
-                    messageDate: Date(), 
+                let receiverMessage = MessageModel(
+                    messageId: UUID().uuidString,
+                    senderId: authenticatedUserId,
+                    receiverId: receiverUserId,
+                    messageContent: senderMessageContent,
+                    messageDate: Date(),
                     messageType: messageType
                 )
                 
                 try await SCDatabaseManager.shared.createData(
                     collectionId: .messages,
-                    documentId: senderId,
-                    secondCollectionId: receiverId,
-                    data: message
+                    documentId: authenticatedUserId,
+                    secondCollectionId: receiverUserId,
+                    data: senderMessage
                 )
                 
                 try await SCDatabaseManager.shared.createData(
                     collectionId: .messages,
-                    documentId: receiverId,
-                    secondCollectionId: senderId,
-                    data: message
+                    documentId: receiverUserId,
+                    secondCollectionId: authenticatedUserId,
+                    data: receiverMessage
                 )
+                
+                self.saveRecentMessage(with: senderMessage)
                 
             } catch {
                 print("Mesaj kaydında hata: \(error)")
@@ -60,60 +81,64 @@ class MessageViewModel {
     }
     
     func fetchMessages() {
-        guard let senderId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
-            return
-        }
         
-        let receiverId = user.id
+        var messages = try? messages.value()
+        messages?.removeAll()
+        self.messages.onNext(messages ?? [])
         
-        let _ = SCDatabaseManager.shared.addListener(
+        listener = SCDatabaseManager.shared.addListener(
             collectionId: .messages,
-            documentId: senderId,
-            secondCollectionId: receiverId,
-            data: MessageModel.self, 
-            query: MessageModel.CodingKeys.messageDate.rawValue) { result in
-                switch result {
-                case .success(let newMessages):
+            documentId: authenticatedUserId,
+            secondCollectionId: receiverUserId,
+            data: MessageModel.self,
+            query: { query in
+                query.order(by: MessageModel.CodingKeys.messageDate.rawValue)
+            },
+            documentChangeType: .added
+        ) { result in
+            switch result {
+            case .success(let data):
+                if let newMessages = data as? [MessageModel]{
                     do {
                         var currentMessages = try self.messages.value()
                         currentMessages.append(contentsOf: newMessages)
                         self.messages.onNext(currentMessages)
-                        guard let lastMessage = currentMessages.last else {return}
-                        self.saveRecentMessage(with: lastMessage)
                     } catch {
-                        print("Mesajları güncellemede hata: \(error)")
+                        print("Error updating messages: \(error)")
                     }
-                case .failure(let error):
-                    print("Mesaj dinleme başarısız: \(error)")
                 }
+            case .failure(let error):
+                print("MessageView da Mesaj dinleme başarısız: \(error)")
             }
+        }
     }
     
-    private func saveRecentMessage(with message : MessageModel) {
+    func removeListener() {
+        listener?.remove()
+    }
+}
+
+private extension MessageViewModel {
+    
+    func saveRecentMessage(with message : MessageModel) {
         
         Task {
-            
-            guard let senderId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
-                return
-            }
-            
-            let receiverId = user.id
-            
+                                    
             do {
-                
+                            
                 try await SCDatabaseManager.shared.createData(
                     collectionId: .mainRecentMessages,
-                    documentId: senderId,
+                    documentId: authenticatedUserId,
                     secondCollectionId: DatabaseCollections.subRecentMessage.rawValue,
-                    secondDocumentId: receiverId,
+                    secondDocumentId: receiverUserId,
                     data: message
                 )
                 
                 try await SCDatabaseManager.shared.createData(
                     collectionId: .mainRecentMessages,
-                    documentId: receiverId,
+                    documentId: receiverUserId,
                     secondCollectionId: DatabaseCollections.subRecentMessage.rawValue,
-                    secondDocumentId: senderId,
+                    secondDocumentId: authenticatedUserId,
                     data: message
                 )
                 

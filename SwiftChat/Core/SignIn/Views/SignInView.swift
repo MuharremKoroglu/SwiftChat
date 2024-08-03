@@ -47,7 +47,8 @@ class SignInView: UIView {
         let stack = CustomUIStackView(
             stackAxis: .vertical,
             componentAlignment: .center,
-            componentSpacing: 5)
+            componentSpacing: 5
+        )
         return stack
     }()
     
