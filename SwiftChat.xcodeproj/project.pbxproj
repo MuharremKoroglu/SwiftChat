@@ -20,7 +20,6 @@
 		3B2521A92C1B15B500174FCF /* DatabaseCollections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2521A82C1B15B500174FCF /* DatabaseCollections.swift */; };
 		3B2521AB2C1B1FE400174FCF /* ContactsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2521AA2C1B1FE400174FCF /* ContactsModel.swift */; };
 		3B2B052A2BF238F4007F6F52 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2B05292BF238F4007F6F52 /* SettingsViewController.swift */; };
-		3B2B052C2BF2390D007F6F52 /* ChannelsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2B052B2BF2390D007F6F52 /* ChannelsViewController.swift */; };
 		3B2B052E2BF24C10007F6F52 /* SCTabBarRootController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2B052D2BF24C10007F6F52 /* SCTabBarRootController.swift */; };
 		3B2FB3A32BF791AE0099EA65 /* ContactsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2FB3A22BF791AE0099EA65 /* ContactsViewModel.swift */; };
 		3B2FB3A62BF7CB680099EA65 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2FB3A52BF7CB680099EA65 /* RxCocoa */; };
@@ -54,6 +53,7 @@
 		3B9831142C05FAFB00434027 /* CustomLottieAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9831132C05FAFB00434027 /* CustomLottieAnimation.swift */; };
 		3B9831172C060E3900434027 /* CustomUIStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9831162C060E3900434027 /* CustomUIStackView.swift */; };
 		3B98311D2C06151900434027 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B98311C2C06151900434027 /* SignUpViewController.swift */; };
+		3B98EB3D2C5ECF94007E1D8E /* SettingsSwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B98EB3C2C5ECF94007E1D8E /* SettingsSwiftUIView.swift */; };
 		3B9A78582BEE57CD00943945 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A78572BEE57CD00943945 /* AppDelegate.swift */; };
 		3B9A785A2BEE57CD00943945 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A78592BEE57CD00943945 /* SceneDelegate.swift */; };
 		3B9A785C2BEE57CD00943945 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9A785B2BEE57CD00943945 /* ChatViewController.swift */; };
@@ -68,7 +68,6 @@
 		3BDBF4052C1C1E9500B468C9 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBF4042C1C1E9500B468C9 /* MessageViewController.swift */; };
 		3BDBF4072C1C1EAE00B468C9 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBF4062C1C1EAE00B468C9 /* MessageView.swift */; };
 		3BDBF4092C1C1EBE00B468C9 /* MessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDBF4082C1C1EBE00B468C9 /* MessageViewModel.swift */; };
-		3BF96C362C0F4F5B00CA3ED3 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C352C0F4F5B00CA3ED3 /* SettingsView.swift */; };
 		3BF96C382C0F50A400CA3ED3 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C372C0F50A400CA3ED3 /* SettingsViewModel.swift */; };
 		3BF96C3A2C0F9E5800CA3ED3 /* AlertTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */; };
 		3BF96C3C2C0FA54600CA3ED3 /* SCAlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF96C3B2C0FA54600CA3ED3 /* SCAlertManager.swift */; };
@@ -82,7 +81,6 @@
 		3B2521A82C1B15B500174FCF /* DatabaseCollections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseCollections.swift; sourceTree = "<group>"; };
 		3B2521AA2C1B1FE400174FCF /* ContactsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsModel.swift; sourceTree = "<group>"; };
 		3B2B05292BF238F4007F6F52 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		3B2B052B2BF2390D007F6F52 /* ChannelsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsViewController.swift; sourceTree = "<group>"; };
 		3B2B052D2BF24C10007F6F52 /* SCTabBarRootController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCTabBarRootController.swift; sourceTree = "<group>"; };
 		3B2FB3A22BF791AE0099EA65 /* ContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewModel.swift; sourceTree = "<group>"; };
 		3B3D38002C24675F00994380 /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
@@ -113,6 +111,7 @@
 		3B9831132C05FAFB00434027 /* CustomLottieAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLottieAnimation.swift; sourceTree = "<group>"; };
 		3B9831162C060E3900434027 /* CustomUIStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUIStackView.swift; sourceTree = "<group>"; };
 		3B98311C2C06151900434027 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		3B98EB3C2C5ECF94007E1D8E /* SettingsSwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSwiftUIView.swift; sourceTree = "<group>"; };
 		3B9A78542BEE57CD00943945 /* SwiftChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B9A78572BEE57CD00943945 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3B9A78592BEE57CD00943945 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -129,7 +128,6 @@
 		3BDBF4042C1C1E9500B468C9 /* MessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		3BDBF4062C1C1EAE00B468C9 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		3BDBF4082C1C1EBE00B468C9 /* MessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewModel.swift; sourceTree = "<group>"; };
-		3BF96C352C0F4F5B00CA3ED3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		3BF96C372C0F50A400CA3ED3 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		3BF96C392C0F9E5800CA3ED3 /* AlertTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTypes.swift; sourceTree = "<group>"; };
 		3BF96C3B2C0FA54600CA3ED3 /* SCAlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCAlertManager.swift; sourceTree = "<group>"; };
@@ -214,7 +212,6 @@
 				3B51D1E62BF39A0F00145F77 /* Chats */,
 				3BDBF4002C1C1E5800B468C9 /* Message */,
 				3B49CCD22BF61EF60019323D /* Contacts */,
-				3B51D1E92BF39A4A00145F77 /* Channels */,
 				3B51D1EC2BF39A6C00145F77 /* Settings */,
 				3B584FE12C04D5B7009BF4D9 /* Components */,
 			);
@@ -323,30 +320,6 @@
 				3B51D1EF2BF39AB700145F77 /* ChatsViewModel.swift */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		3B51D1E92BF39A4A00145F77 /* Channels */ = {
-			isa = PBXGroup;
-			children = (
-				3B51D1EA2BF39A5100145F77 /* ViewController */,
-				3B51D1EB2BF39A5E00145F77 /* ViewModels */,
-			);
-			path = Channels;
-			sourceTree = "<group>";
-		};
-		3B51D1EA2BF39A5100145F77 /* ViewController */ = {
-			isa = PBXGroup;
-			children = (
-				3B2B052B2BF2390D007F6F52 /* ChannelsViewController.swift */,
-			);
-			path = ViewController;
-			sourceTree = "<group>";
-		};
-		3B51D1EB2BF39A5E00145F77 /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		3B51D1EC2BF39A6C00145F77 /* Settings */ = {
@@ -526,7 +499,7 @@
 		3BF96C342C0F4F4400CA3ED3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				3BF96C352C0F4F5B00CA3ED3 /* SettingsView.swift */,
+				3B98EB3C2C5ECF94007E1D8E /* SettingsSwiftUIView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -621,13 +594,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BD74D3F2C15B9B5009399A3 /* SCDatabaseManager.swift in Sources */,
+				3B98EB3D2C5ECF94007E1D8E /* SettingsSwiftUIView.swift in Sources */,
 				3B49CCDA2BF645800019323D /* ContactsTableViewCell.swift in Sources */,
-				3B2B052C2BF2390D007F6F52 /* ChannelsViewController.swift in Sources */,
 				3B49CCD62BF61F720019323D /* ContactsViewController.swift in Sources */,
 				3BDBF4092C1C1EBE00B468C9 /* MessageViewModel.swift in Sources */,
 				3B584FE32C04D5F3009BF4D9 /* CustomUITextField.swift in Sources */,
 				3B51D1E52BF381C300145F77 /* Constants.swift in Sources */,
-				3BF96C362C0F4F5B00CA3ED3 /* SettingsView.swift in Sources */,
 				3B51D1E12BF380E100145F77 /* APIUserRequestModel.swift in Sources */,
 				3BD74D412C15DEC8009399A3 /* SCMediaStorageManager.swift in Sources */,
 				3B9A785C2BEE57CD00943945 /* ChatViewController.swift in Sources */,
