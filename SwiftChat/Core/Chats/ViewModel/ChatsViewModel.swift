@@ -23,22 +23,19 @@ class ChatsViewModel {
         return userId
     }
     
-    private var listener : ListenerRegistration?
+    private var listeners: [ListenerRegistration?] = []
     
     init() {
         fetchRecentMessages()
     }
     
-    
     func fetchRecentMessages() {
-        
-        removeListener()
         
         var messages = try? recentMessages.value()
         messages?.removeAll()
         self.recentMessages.onNext(messages ?? [])
         
-        listener = SCDatabaseManager.shared.addListener(
+        let recentMessagesListener = SCDatabaseManager.shared.addListener(
             collectionId: .mainRecentMessages,
             documentId: authenticatedUserId,
             secondCollectionId: DatabaseCollections.subRecentMessage.rawValue,
@@ -49,22 +46,25 @@ class ChatsViewModel {
         ) { result in
             switch result {
             case .success(let data):
-                guard let newMessages = data as? [MessageModel] else {return}
-                self.addNewRecentMessage(with: newMessages)
+                if let newMessages = data as? [MessageModel] {
+                    self.addNewRecentMessage(with: newMessages)
+                }
             case .failure(let error):
-                print("Chat View'da Mesaj dinleme başarısız: \(error)")
+                print("Failed to listen for messages in Chat View: \(error)")
             }
         }
+        
+        addListener(recentMessagesListener)
         
     }
     
     func deleteRecentMessage(with message : RecentMessageModel) {
-                
+        
         Task {
             
             do {
                 
-                removeListener()
+                removeAllListeners()
                 
                 var currentMessages = try self.recentMessages.value()
                 if let index = currentMessages.firstIndex(where: { $0.recentMessageId == message.recentMessageId }) {
@@ -72,18 +72,17 @@ class ChatsViewModel {
                     self.recentMessages.onNext(currentMessages)
                 }
                 
-                try await SCDatabaseManager.shared.deleteMultipleData(
-                    collectionId: .messages,
-                    documentId: authenticatedUserId,
-                    secondCollectionId: message.receiverProfile.id
-                )
-                
-                
                 try await SCDatabaseManager.shared.deleteSingleData(
                     collectionId: .mainRecentMessages,
                     documentId: authenticatedUserId,
                     secondCollectionId: DatabaseCollections.subRecentMessage.rawValue,
                     secondDocumentId: message.receiverProfile.id
+                )
+                
+                try await SCDatabaseManager.shared.deleteMultipleData(
+                    collectionId: .messages,
+                    documentId: authenticatedUserId,
+                    secondCollectionId: message.receiverProfile.id
                 )
                 
                 try await SCMediaStorageManager.shared.deleteMultipleData(
@@ -93,74 +92,103 @@ class ChatsViewModel {
                 )
                 
                 fetchRecentMessages()
-                                                
+                
             }catch {
-                print("Son mesaj silinemedi : \(error)")
+                print("Failed to delete recent message: \(error)")
             }
         }
-                
+        
     }
     
 }
 
 private extension ChatsViewModel {
     
-    func removeListener() {
-        listener?.remove()
-    }
-    
     func addNewRecentMessage(with messages : [MessageModel]) {
         
-        Task {
-            do {
-                
-                let userIds = messages.compactMap { message in
-                    message.receiverId == authenticatedUserId ? message.senderId : message.receiverId
-                }
-                
-                let firebaseUsers = try await SCDatabaseManager.shared.readMultipleData(
-                    collectionId: .users,
-                    query: userIds,
-                    data: FirebaseUserModel.self
-                )
-                
-                let contacts = firebaseUsers.compactMap { user in
-                    return ContactModel(from: user)
-                }
-                
-                let chatMessages = messages.compactMap { message -> RecentMessageModel? in
-                    guard let contact = contacts.first(where: {$0.id == message.receiverId || $0.id == message.senderId}) else {
-                        print("Bu id ile ilişkili kullanıcı bulunamadı.")
-                        return nil
-                    }
-                    
-                    let recentMessage = RecentMessageModel(
-                        recentMessageId: message.messageId,
-                        receiverProfile: contact,
-                        recentMessageContent: message.messageContent,
-                        recentMessageType: message.messageType,
-                        recentMessageDate: message.messageDate
-                    )
-                    
-                    return recentMessage
-                }
-                
-                var currentMessages = try self.recentMessages.value()
-                
-                currentMessages.removeAll { currentMessage in
-                    chatMessages.contains { chatMessage in
-                        currentMessage.receiverProfile.id  == chatMessage.receiverProfile.id
-                    }
-                }
-                
-                currentMessages.insert(contentsOf: chatMessages, at: 0)
-                self.recentMessages.onNext(currentMessages)
-
-            }catch {
-                print("Chat ekranında kullanıcı verileri alınamadı : \(error)")
-            }
+        let userIds = messages.compactMap { message in
+            message.receiverId == authenticatedUserId ? message.senderId : message.receiverId
         }
- 
+        
+        guard !userIds.isEmpty else {return}
+        
+        let recentMessageReceiverListener = SCDatabaseManager.shared.addListener(
+            collectionId: .users,
+            data: FirebaseUserModel.self,
+            query: { query in
+                query.whereField(FieldPath.documentID(), in: userIds)
+            },
+            completion: { result in
+                switch result {
+                case .success(let data):
+                    guard let firebaseUsers = data as? [FirebaseUserModel] else { return }
+                    let chatMessages = self.createRecentMessage(from: messages, with: firebaseUsers)
+                    self.updateRecentMessages(from: chatMessages)
+                case .failure(let error):
+                    print("Failed to retrieve users for recent messages: \(error)")
+                }
+            })
+        
+        addListener(recentMessageReceiverListener)
+        
+    }
+    
+    func createRecentMessage(from messages : [MessageModel], with users : [FirebaseUserModel]) -> [RecentMessageModel] {
+        
+        let contacts = users.compactMap { user in
+            return ContactModel(from: user)
+        }
+        
+        let chatMessages = messages.compactMap { message -> RecentMessageModel? in
+            guard let contact = contacts.first(where: {$0.id == message.receiverId || $0.id == message.senderId}) else {
+                print("No user found associated with this ID.")
+                return nil
+            }
+            
+            let recentMessage = RecentMessageModel(
+                recentMessageId: message.messageId,
+                receiverProfile: contact,
+                recentMessageContent: message.messageContent,
+                recentMessageType: message.messageType,
+                recentMessageDate: message.messageDate
+            )
+            
+            return recentMessage
+        }
+        
+        return chatMessages
+        
+    }
+    
+    func updateRecentMessages(from chatMessages : [RecentMessageModel]) {
+        
+        do {
+            
+            var currentMessages = try self.recentMessages.value()
+            
+            currentMessages.removeAll { currentMessage in
+                chatMessages.contains { chatMessage in
+                    currentMessage.receiverProfile.id  == chatMessage.receiverProfile.id
+                }
+            }
+            
+            currentMessages.insert(contentsOf: chatMessages, at: 0)
+            
+            self.recentMessages.onNext(currentMessages)
+            
+        }catch {
+            print("Failed to create recent users: \(error)")
+        }
+        
+    }
+    
+    func addListener(_ listener: ListenerRegistration?) {
+        listeners.append(listener)
+    }
+    
+    func removeAllListeners() {
+        listeners.forEach { $0?.remove() }
+        listeners.removeAll()
     }
     
 }

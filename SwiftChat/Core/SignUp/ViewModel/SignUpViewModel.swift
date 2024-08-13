@@ -31,7 +31,7 @@ class SignUpViewModel {
                     
                     try SCAuthenticationManager.shared.signOut()
                     
-                    guard let imageData = UIImage(named: "anon_user")?.jpegData(compressionQuality: 1) else { return }
+                    guard let imageData = UIImage(resource: .anonUser).jpegData(compressionQuality: 1) else { return }
                     
                     let imageUrl = try await SCMediaStorageManager.shared.uploadData(
                         folderName: .profilePictures,
@@ -61,7 +61,7 @@ class SignUpViewModel {
                     isRegistering.onNext(false)
                     isSignUpCompleted.onNext(false)
                     errorType.onNext(.commonError)
-                    print("KULLANICI KAYIT EDİLEMEDİ : \(error)")
+                    print("Failed to register user: \(error)")
                 }
             }
         }else {

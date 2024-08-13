@@ -61,12 +61,14 @@ final class SCDatabaseManager {
         data : T
     ) async throws {
         
-        try getDocumentReference(
+        let documentReference = getDocumentReference(
             collectionId: collectionId,
             documentId: documentId,
             secondCollectionId: secondCollectionId,
-            secondDocumentId: secondDocumentId)
-        .setData(from: data, merge: false)
+            secondDocumentId: secondDocumentId
+        )
+        
+        try documentReference.setData(from: data, merge: false)
         
     }
     
@@ -93,7 +95,7 @@ final class SCDatabaseManager {
         collectionId : DatabaseCollections,
         documentId : String? = nil,
         secondCollectionId : String? = nil,
-        query : [String] = [],
+        query: ((Query) -> Query)? = nil,
         data : T.Type
     ) async throws -> [T]{
         
@@ -103,13 +105,15 @@ final class SCDatabaseManager {
             secondCollectionId: secondCollectionId
         )
         
-        let snapshot: QuerySnapshot
+        let queryReference: Query
         
-        if !query.isEmpty {
-            snapshot = try await collectionReference.whereField(FieldPath.documentID(), in: query).getDocuments()
+        if let query = query {
+            queryReference = query(collectionReference)
         } else {
-            snapshot = try await collectionReference.getDocuments()
+            queryReference = collectionReference
         }
+        
+        let snapshot = try await queryReference.getDocuments()
         
         var dataModels: [T] = []
         for document in snapshot.documents {

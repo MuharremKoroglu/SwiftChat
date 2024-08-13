@@ -17,9 +17,9 @@ class ChatView: UIView {
     
     let deletedChat = PublishSubject<RecentMessageModel>()
     
-    private let bag = DisposeBag()
+    var recentMessages : [RecentMessageModel] = []
     
-    private var recentMessages : [RecentMessageModel] = []
+    private let bag = DisposeBag()
     
     private let chatsTableView : UITableView = {
         let tableView = UITableView()

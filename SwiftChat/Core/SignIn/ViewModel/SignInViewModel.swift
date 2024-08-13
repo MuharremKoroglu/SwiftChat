@@ -18,6 +18,14 @@ class SignInViewModel {
     var isSigning = PublishSubject<Bool>()
     var errorType = PublishSubject<AlertTypes>()
     
+    private var authenticatedUserId : String {
+        guard let userId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
+            return ""
+        }
+        
+        return userId
+    }
+    
     func signInWithMail(email : String, password : String) {
         
         isSigning.onNext(true)
@@ -51,7 +59,7 @@ class SignInViewModel {
                     default:
                         errorType.onNext(.commonError)
                     }
-                    print("EMAIL ile girişte hata : \(error) ")
+                    print("Error occurred during email sign-in: \(error)")
                 }
             }
         }else {
@@ -73,38 +81,50 @@ class SignInViewModel {
                 let userName = userProfile.name
                 let userEmail = userProfile.email
                 
-                let userProfileImageURL: URL
                 
-                if userProfile.hasImage {
-                    userProfileImageURL = userProfile.imageURL(withDimension: 200) ?? URL(string: "https://www.google.com")!
+                var userProfileImageURL: URL?
+                
+                if userProfile.hasImage, let profileImageURL = userProfile.imageURL(withDimension: 200) {
+                    
+                    if let imageData = await downloadProfileImage(with: profileImageURL) {
+                        userProfileImageURL = try await SCMediaStorageManager.shared.uploadData(
+                            folderName: .profilePictures,
+                            fileName: authenticatedUserId,
+                            data: imageData
+                        )
+                    }
+                    
                 } else {
-                    guard let imageData = UIImage(named: "anon_user")?.jpegData(compressionQuality: 1) else {
+                    
+                    guard let imageData = UIImage(resource: .anonUser).jpegData(compressionQuality: 1) else {
                         return
                     }
                     
                     userProfileImageURL = try await SCMediaStorageManager.shared.uploadData(
                         folderName: .profilePictures,
-                        fileName: user.userID ?? "",
+                        fileName:authenticatedUserId,
                         data: imageData
                     )
                 }
                 
-                guard let authenticatedUser =  SCAuthenticationManager.shared.getAuthenticatedUser() else {return}
+                guard let finaluserProfileImageURL = userProfileImageURL else {return}
+                
                 
                 let userModel = FirebaseUserModel(
-                    profileImage: userProfileImageURL,
-                    userId: authenticatedUser.uid,
+                    profileImage: finaluserProfileImageURL,
+                    userId: authenticatedUserId,
                     userName: userName.capitalized,
                     userEmail: userEmail,
                     userPhoneNumber: "(647) 463-2587",
                     accountCreatedDate: Date()
                 )
                 
+                
                 try await SCDatabaseManager
                     .shared
                     .createData(
                         collectionId: .users,
-                        documentId: authenticatedUser.uid,
+                        documentId: authenticatedUserId,
                         data: userModel
                     )
                 
@@ -114,7 +134,7 @@ class SignInViewModel {
                 isSigning.onNext(false)
                 completedSigning.onNext(false)
                 errorType.onNext(.commonError)
-                print("GOOGLE ile girişte hata : \(error)")
+                print("Error occurred during Google sign-in: \(error)")
             }
         }
     }
@@ -134,7 +154,7 @@ class SignInViewModel {
                 }catch {
                     isSigning.onNext(false)
                     errorType.onNext(.commonError)
-                    print("Şifre Yenileme Gönderilemedi : \(error)")
+                    print("Failed to send password reset email: \(error)")
                 }
             }
             
@@ -145,4 +165,18 @@ class SignInViewModel {
         
     }
     
+}
+
+private extension SignInViewModel {
+    
+    func downloadProfileImage(with url: URL) async -> Data? {
+        let result = await SCImageDownloaderManager.shared.downloadImage(imageUrl: url)
+        
+        switch result {
+        case .success(let imageData):
+            return imageData
+        case .failure(_):
+            return nil
+        }
+    }
 }

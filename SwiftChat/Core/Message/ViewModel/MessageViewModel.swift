@@ -36,9 +36,39 @@ class MessageViewModel {
         fetchMessages()
     }
     
-    func sendMessage(senderMessageContent: String, receiverMessageContent : String, messageType : MessageType) {
+    func sendMessage(textMessage : String? = nil, mediaMessage : Data? = nil) {
+        
+        var senderMessageContent : String = ""
+        var receiverMessageContent : String = ""
+        var messageType : MessageType = .text
+        
         Task {
             do {
+                
+                if let text = textMessage {
+                    senderMessageContent = text
+                    receiverMessageContent = text
+                }
+                
+                if let data = mediaMessage {
+                    
+                    let senderImageUrl = try await self.uploadMedia(
+                        data: data,
+                        senderId: authenticatedUserId,
+                        receiverId: receiverUserId
+                    )
+                    
+                    let receiverImageUrl = try await self.uploadMedia(
+                        data: data,
+                        senderId: receiverUserId,
+                        receiverId: authenticatedUserId
+                    )
+                    
+                    senderMessageContent = senderImageUrl.absoluteString
+                    receiverMessageContent = receiverImageUrl.absoluteString
+                    messageType = .media
+                    
+                }
                                 
                 let senderMessage = MessageModel(
                     messageId: UUID().uuidString,
@@ -53,29 +83,27 @@ class MessageViewModel {
                     messageId: UUID().uuidString,
                     senderId: authenticatedUserId,
                     receiverId: receiverUserId,
-                    messageContent: senderMessageContent,
+                    messageContent: receiverMessageContent,
                     messageDate: Date(),
                     messageType: messageType
                 )
                 
-                try await SCDatabaseManager.shared.createData(
-                    collectionId: .messages,
-                    documentId: authenticatedUserId,
-                    secondCollectionId: receiverUserId,
-                    data: senderMessage
+                try await self.saveMessage(
+                    message: senderMessage,
+                    senderId: authenticatedUserId,
+                    receiverId: receiverUserId
                 )
                 
-                try await SCDatabaseManager.shared.createData(
-                    collectionId: .messages,
-                    documentId: receiverUserId,
-                    secondCollectionId: authenticatedUserId,
-                    data: receiverMessage
+                try await self.saveMessage(
+                    message: receiverMessage,
+                    senderId: receiverUserId,
+                    receiverId: authenticatedUserId
                 )
                 
                 self.saveRecentMessage(with: senderMessage)
                 
             } catch {
-                print("Mesaj kaydında hata: \(error)")
+                print("Error occurred while saving the message: \(error)")
             }
         }
     }
@@ -108,7 +136,7 @@ class MessageViewModel {
                     }
                 }
             case .failure(let error):
-                print("MessageView da Mesaj dinleme başarısız: \(error)")
+                print("Failed to listen for messages in Messages View: \(error)")
             }
         }
     }
@@ -143,11 +171,30 @@ private extension MessageViewModel {
                 )
                 
             }catch {
-                print("Son mesaj kaydı yapılamadı : \(error)")
+                print("Error occurred while saving the recent message: \(error)")
             }
             
         }
         
+    }
+    
+    func uploadMedia(data: Data, senderId: String, receiverId: String) async throws -> URL {
+        return try await SCMediaStorageManager.shared.uploadData(
+            folderName: .messageMedia,
+            fileName: senderId,
+            secondFileName: receiverId,
+            thirdFileName: UUID().uuidString,
+            data: data
+        )
+    }
+
+    func saveMessage(message: MessageModel, senderId: String, receiverId: String) async throws {
+        try await SCDatabaseManager.shared.createData(
+            collectionId: .messages,
+            documentId: senderId,
+            secondCollectionId: receiverId,
+            data: message
+        )
     }
 }
 

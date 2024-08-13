@@ -8,67 +8,151 @@
 import Foundation
 import RxSwift
 import RxCocoa
-import UIKit
+import FirebaseFirestore
 
 @MainActor
 class SettingsViewModel {
     
-    var profileImage = PublishSubject<UIImage>()
-    var userName = PublishSubject<String>()
-    var userEmail = PublishSubject<String>()
+    let user = BehaviorSubject<ContactModel?>(value: nil)
     var isProcessing = PublishSubject<Bool>()
     var isCompleted = PublishSubject<Bool>()
     
+    private var authenticatedUserId : String {
+        guard let userId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
+            return ""
+        }
+        
+        return userId
+    }
+    
+    private var listener : ListenerRegistration?
     
     func fetchUserData() {
+        
+        isProcessing.onNext(true)
+                
+        listener = SCDatabaseManager.shared.addListener(
+            collectionId: .users,
+            documentId: authenticatedUserId,
+            data: FirebaseUserModel.self,
+            completion: { result in
+                
+                switch result {
+                case .success(let data):
+                    if let firebaseUser = data as? FirebaseUserModel {
+                        let contactUser = ContactModel(from: firebaseUser)
+                        self.user.onNext(contactUser)
+                    }
+                case .failure(let error):
+                    print("Failed to listen for user in Settings View: \(error)")
+                }
+                
+                self.isProcessing.onNext(false)
+            })
+        
+    }
+    
+    func updateUserProfilePicture(with imageData : Data) {
+        
         isProcessing.onNext(true)
         
         Task {
             
+            let imageUrl = try await SCMediaStorageManager.shared.uploadData(
+                folderName: .profilePictures,
+                fileName: authenticatedUserId,
+                data: imageData
+            )
+            
+            try await SCDatabaseManager.shared.updateData(
+                collectionId: .users,
+                documentId: authenticatedUserId,
+                field: FirebaseUserModel.CodingKeys.profileImage.rawValue,
+                newValue: imageUrl.absoluteString
+            )
+            
+            isProcessing.onNext(false)
+            
+        }
+        
+    }
+    
+    func deleteAccount(with userIds : [String]) {
+        
+        removeListener()
+        isProcessing.onNext(true)
+        
+        Task {
             do {
-                let authenticatedUser =  SCAuthenticationManager.shared.getAuthenticatedUser()
                 
-                let user = try await SCDatabaseManager.shared.readSingleData(
-                    collectionId: .users,
-                    documentId: authenticatedUser?.uid ?? "",
-                    data: FirebaseUserModel.self
+                if !userIds.isEmpty {
+                    
+                    for id in userIds {
+                        
+                        try await SCDatabaseManager.shared.deleteMultipleData(
+                            collectionId: .messages,
+                            documentId: authenticatedUserId,
+                            secondCollectionId: id
+                        )
+                        
+                        try await SCMediaStorageManager.shared.deleteMultipleData(
+                            folderName: .messageMedia,
+                            fileName: authenticatedUserId,
+                            secondFileName: id
+                        )
+                    }
+                    
+                }
+                
+                try await SCDatabaseManager.shared.deleteMultipleData(
+                    collectionId: .mainRecentMessages,
+                    documentId: authenticatedUserId,
+                    secondCollectionId: DatabaseCollections.subRecentMessage.rawValue
                 )
                 
-                userName.onNext(user.userName)
-                userEmail.onNext(user.userEmail)
+                try await SCDatabaseManager.shared.deleteSingleData(
+                    collectionId: .users,
+                    documentId: authenticatedUserId
+                )
                 
-                let profileImageResult = await SCImageDownloaderManager.shared.downloadImage(imageUrl: user.profileImage)
+                try await SCMediaStorageManager.shared.deleteSingleData(
+                    folderName: .profilePictures,
+                    fileName: authenticatedUserId
+                )
                 
-                switch profileImageResult {
-                case .success(let imageData):
-                    guard let image = UIImage(data: imageData) else {return}
-                    profileImage.onNext(image)
-                case .failure(_):
-                    guard let image = UIImage(named: "anon_user") else {return}
-                    profileImage.onNext(image)
-                }
+                try SCAuthenticationManager.shared.deleteAccount()
+                
                 isProcessing.onNext(false)
                 isCompleted.onNext(true)
                 
-            }catch {
+            }catch{
                 isProcessing.onNext(false)
                 isCompleted.onNext(false)
-                print("Kullanıcı verileri alınamadı : \(error)")
+                print("Error occurred while deleting user account: \(error)")
             }
         }
+
     }
     
     func signOut() {
+        
+        removeListener()
         isProcessing.onNext(true)
+        
         do {
             try SCAuthenticationManager.shared.signOut()
+            
             isProcessing.onNext(false)
             isCompleted.onNext(true)
         }catch{
             isProcessing.onNext(false)
             isCompleted.onNext(false)
-            print("ÇIKIŞ YAPILAMADI : \(error)")
+            print("Sign-out failed: \(error.localizedDescription)")
         }
+    }
+    
+    func removeListener() {
+        listener?.remove()
     }
 
 }

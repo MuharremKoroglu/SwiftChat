@@ -154,7 +154,7 @@ private extension MessagesTableViewCell {
                 messageImageView.image = image
                 
             case .failure(_):
-                guard let image = UIImage(named: "questionmark") else { return }
+                let image = UIImage(resource: .anonUser)
                 messageImageView.image = image
             }
         }

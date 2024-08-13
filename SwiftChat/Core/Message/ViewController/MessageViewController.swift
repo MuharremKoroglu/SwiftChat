@@ -100,7 +100,7 @@ private extension MessageViewController {
                 guard let profileImage = UIImage(data: imageData) else {return}
                 userProfileImage.image = profileImage
             case .failure(_):
-                guard let profileImage = UIImage(named: "anon_user") else {return}
+                let profileImage = UIImage(resource: .anonUser)
                 userProfileImage.image = profileImage
             }
 
@@ -115,24 +115,22 @@ private extension MessageViewController {
                 guard let strongSelf = self else {return}
                 SCAlertManager.presentAlert(viewController: strongSelf, alertType: .sendMedia(
                     cameraHandler: {
-                        strongSelf.pickImage(with: .camera)
+                        SCImagePickerManager.pickImage(
+                            from: .camera,
+                            in: strongSelf
+                        )
                     },
                     photoLibraryHandler: {
-                        strongSelf.pickImage(with: .photoLibrary)
+                        SCImagePickerManager.pickImage(
+                            from: .photoLibrary,
+                            in: strongSelf
+                        )
                     })
                 )
             })
             .disposed(by: bag)
     }
     
-    func pickImage(with sourceType : UIImagePickerController.SourceType) {
-        let picker = UIImagePickerController()
-        picker.sourceType = sourceType
-        picker.delegate = self
-        picker.allowsEditing = true
-        present(picker, animated: true)
-    }
- 
 }
 
 extension MessageViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -146,35 +144,7 @@ extension MessageViewController : UIImagePickerControllerDelegate, UINavigationC
             return
         }
         
-        Task {
-            
-            guard let senderId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
-                return
-            }
-            
-            let senderImageUrl = try await SCMediaStorageManager.shared.uploadData(
-                folderName: .messageMedia,
-                fileName: senderId,
-                secondFileName: user.id,
-                thirdFileName: UUID().uuidString,
-                data: compressedImage
-            )
-            
-            let receiverImageUrl = try await SCMediaStorageManager.shared.uploadData(
-                folderName: .messageMedia,
-                fileName: user.id,
-                secondFileName: senderId,
-                thirdFileName: UUID().uuidString,
-                data: compressedImage
-            )
-            
-            viewModel.sendMessage(
-                senderMessageContent: senderImageUrl.absoluteString,
-                receiverMessageContent: receiverImageUrl.absoluteString,
-                messageType: .media
-            )
-        }
-
+        viewModel.sendMessage(mediaMessage: compressedImage)
         
     }
     

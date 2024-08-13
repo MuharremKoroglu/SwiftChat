@@ -95,7 +95,6 @@ private extension ContactsView {
             })
             .disposed(by: bag)
         
-        viewModel.fetchContacts()
     }
     
 }

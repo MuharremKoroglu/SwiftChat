@@ -11,11 +11,11 @@ import RxCocoa
 
 class ChatViewController: UIViewController {
     
+    let chatView : ChatView
+    
     private let contactsPage = ContactsViewController(viewModel: ContactsViewModel())
     
     private let bag = DisposeBag()
-    
-    private let chatView : ChatView
     
     private let viewModel : ChatsViewModel
         
@@ -26,6 +26,7 @@ class ChatViewController: UIViewController {
         setUpConstraints()
         contactsPageButton()
         setUpBindings()
+        
     }
     
     init(viewModel : ChatsViewModel) {

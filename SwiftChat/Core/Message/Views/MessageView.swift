@@ -155,9 +155,7 @@ private extension MessageView {
             .bind { [weak self] _ in
                 guard let strongSelf = self else { return }
                 strongSelf.viewModel.sendMessage(
-                    senderMessageContent: strongSelf.messageTextView.text,
-                    receiverMessageContent: strongSelf.messageTextView.text,
-                    messageType: .text
+                    textMessage: strongSelf.messageTextView.text
                 )
                 strongSelf.messageTextView.text = ""
             }
@@ -169,7 +167,7 @@ private extension MessageView {
     
     func scrollToBottom() {
         guard !messages.isEmpty else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
             self.messagesTableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
         }

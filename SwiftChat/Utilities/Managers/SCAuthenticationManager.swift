@@ -58,6 +58,13 @@ final class SCAuthenticationManager {
         try Auth.auth().signOut()
     }
     
+    func deleteAccount() throws{
+        guard let user = self.getAuthenticatedUser() else {
+            return
+        }
+        user.delete()
+    }
+    
 }
 
 enum GoogleSignInError : Error {

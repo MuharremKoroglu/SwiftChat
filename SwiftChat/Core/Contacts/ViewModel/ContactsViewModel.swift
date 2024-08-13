@@ -15,11 +15,23 @@ class ContactsViewModel {
     var filteredContacts = PublishSubject<[ContactSection]>()
     var isFetching = PublishSubject<Bool>()
     
+    private var authenticatedUserId : String {
+        guard let userId = SCAuthenticationManager.shared.getAuthenticatedUser()?.uid else {
+            return ""
+        }
+        
+        return userId
+    }
+    
     private let service = NetworkService()
     private var contacts: [ContactModel] = []
     
+    init() {
+        fetchContacts()
+    }
+    
     func fetchContacts() {
-        
+
         isFetching.onNext(true)
         
         Task {
@@ -37,7 +49,9 @@ class ContactsViewModel {
             switch contactApiResponse {
             case .success(let fetchedApiUsers):
                 
-                let firebaseUsers = fetchedFirebaseUsers.map({ContactModel(from: $0)})
+                let firebaseUsers = fetchedFirebaseUsers
+                    .filter({$0.userId != authenticatedUserId})
+                    .map({ContactModel(from: $0)})
                 
                 let apiUsers = fetchedApiUsers.results.map({ContactModel(from: $0)})
                 
@@ -55,7 +69,7 @@ class ContactsViewModel {
                 
                 self.isFetching.onNext(false)
                 
-                print("Api kullanıcıları getirilemedi : \(error)")
+                print("Failed to fetch contacts: \(error)")
             }
             
             

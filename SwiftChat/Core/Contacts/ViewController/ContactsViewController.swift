@@ -13,13 +13,8 @@ class ContactsViewController: UIViewController {
     
     let selectedUser = PublishSubject<ContactModel>()
     
-    private let searchController : UISearchController = {
-        let searchController = UISearchController()
-        searchController.automaticallyShowsCancelButton = false
-        searchController.isActive = false
-        return searchController
-    }()
-    
+    private let searchController = UISearchController()
+
     private let bag = DisposeBag()
 
     private let contactsView : ContactsView
@@ -44,12 +39,6 @@ class ContactsViewController: UIViewController {
         setUpConstraints()
         setUpNavigationComponents()
         setUpBindings()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        searchController.isActive = false
-        viewModel.filterContacts(searchText: "")
     }
     
 }
@@ -117,8 +106,12 @@ private extension ContactsViewController {
         contactsView
             .selectedUser
             .subscribe(onNext: { [weak self] user in
-                self?.selectedUser.onNext(user)
-                self?.closeContactsPage()
+                self?.searchController.searchBar.text = ""
+                self?.searchController.isActive = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self?.selectedUser.onNext(user)
+                    self?.closeContactsPage()
+                }
             })
             .disposed(by: bag)
             
